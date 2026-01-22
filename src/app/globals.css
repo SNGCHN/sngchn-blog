@@ -1,27 +1,231 @@
+/* Pretendard 폰트 CDN */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* 폰트 */
+  --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --font-mono: var(--font-geist-mono), "JetBrains Mono", "Fira Code", monospace;
+
+  /* 색상 변수 매핑 */
+  --color-warm-bg: var(--bg-primary);
+  --color-warm-text: var(--text-primary);
+  --color-warm-muted: var(--text-muted);
+  --color-warm-border: var(--border-color);
+  --color-warm-primary: var(--color-primary);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
+  /* 기본: Light Mode */
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg-primary: #fdfcfb;
+    --text-primary: #1c1c1c;
+    --text-muted: #737367;
+    --border-color: #e8e6e1;
+    --color-primary: #52524e;
+  }
+
+  /* 시스템이 다크모드일 때 자동 적용 (CSS만으로 FOUC 없음) */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #121211;
+      --text-primary: #edece9;
+      --text-muted: #94948d;
+      --border-color: #2b2b2a;
+      --color-primary: #d6d3cc;
+    }
+  }
+
+  /* 수동 오버라이드: 사용자가 라이트 선택 */
+  [data-theme="light"] {
+    --bg-primary: #fdfcfb;
+    --text-primary: #1c1c1c;
+    --text-muted: #737367;
+    --border-color: #e8e6e1;
+    --color-primary: #52524e;
+  }
+
+  /* 수동 오버라이드: 사용자가 다크 선택 */
+  [data-theme="dark"] {
+    --bg-primary: #121211;
+    --text-primary: #edece9;
+    --text-muted: #94948d;
+    --border-color: #2b2b2a;
+    --color-primary: #d6d3cc;
+  }
+
+  * {
+    border-color: var(--border-color);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    letter-spacing: -0.025em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* 헤딩 스타일 */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+  }
+
+  /* 선택 영역 */
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-primary) 20%, transparent);
+    color: var(--text-primary);
+  }
+
+  /* 스크롤바 숨김 (선택사항) */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Prose 스타일 (MDX 콘텐츠용) */
+  .prose {
+    --tw-prose-body: var(--text-primary);
+    --tw-prose-headings: var(--text-primary);
+    --tw-prose-lead: var(--text-primary);
+    --tw-prose-links: var(--color-primary);
+    --tw-prose-bold: var(--text-primary);
+    --tw-prose-counters: var(--text-muted);
+    --tw-prose-bullets: var(--text-muted);
+    --tw-prose-hr: var(--border-color);
+    --tw-prose-quotes: var(--text-primary);
+    --tw-prose-quote-borders: var(--border-color);
+    --tw-prose-captions: var(--text-muted);
+    --tw-prose-code: var(--color-primary);
+    --tw-prose-pre-code: #edece9;
+    --tw-prose-pre-bg: #1c1c1c;
+    --tw-prose-th-borders: var(--border-color);
+    --tw-prose-td-borders: var(--border-color);
+    max-width: 65ch;
+    font-size: 1rem;
+    line-height: 1.625;
+    color: var(--text-primary);
+  }
+
+  .prose p {
+    margin-bottom: 1.5rem;
+  }
+
+  .prose h1, .prose h2, .prose h3, .prose h4 {
+    color: var(--text-primary);
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .prose strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .prose ul {
+    list-style-type: disc;
+    list-style-position: inside;
+    margin-bottom: 1.5rem;
+  }
+
+  .prose ul li {
+    margin-bottom: 0.5rem;
+  }
+
+  .prose ul ::marker {
+    color: var(--text-muted);
+  }
+
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    font-weight: 500;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.375rem;
+    background-color: color-mix(in oklab, var(--text-muted) 10%, transparent);
+    color: var(--color-primary);
+  }
+
+  .prose pre {
+    background-color: #1c1c1c;
+    color: #edece9;
+    padding: 1.25rem;
+    border-radius: 0.625rem;
+    overflow-x: auto;
+    margin-bottom: 2rem;
+    border: 1px solid color-mix(in oklab, var(--border-color) 50%, transparent);
+  }
+
+  .prose pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+    font-size: 0.875rem;
+  }
+
+  .prose a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color 0.15s ease;
+  }
+
+  .prose a:hover {
+    color: var(--text-primary);
+  }
+
+  .prose blockquote {
+    border-left: 2px solid var(--color-primary);
+    padding-left: 1.5rem;
+    font-style: italic;
+    color: var(--text-muted);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .prose {
+    --tw-prose-body: var(--text-primary);
+    --tw-prose-headings: var(--text-primary);
+    --tw-prose-lead: var(--text-primary);
+    --tw-prose-links: var(--color-primary);
+    --tw-prose-bold: var(--text-primary);
+    --tw-prose-counters: var(--text-muted);
+    --tw-prose-bullets: var(--text-muted);
+    --tw-prose-hr: var(--border-color);
+    --tw-prose-quotes: var(--text-primary);
+    --tw-prose-quote-borders: var(--border-color);
+    --tw-prose-captions: var(--text-muted);
+    --tw-prose-code: var(--color-primary);
+    --tw-prose-pre-code: #edece9;
+    --tw-prose-pre-bg: #1c1c1c;
+    --tw-prose-th-borders: var(--border-color);
+    --tw-prose-td-borders: var(--border-color);
+  }
+
+  .prose :where(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a) {
+    color: inherit;
+  }
+}
+
+@layer utilities {
+  .prose :where(p, li, h1, h2, h3, h4, h5, h6, strong, em, blockquote) {
+    color: var(--text-primary);
+  }
+
+  .prose :where(a) {
+    color: var(--color-primary);
+  }
+
+  .prose :where(li)::marker {
+    color: var(--text-muted);
+  }
 }

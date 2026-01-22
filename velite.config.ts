@@ -32,12 +32,13 @@ export default defineConfig({
                     slug: s.path(),
                     date: s.isodate(),
                     description: s.string().optional(),
+                    tags: s.array(s.string()).default([]),
                     code: s.mdx(),
                     toc: s.toc(),
                     metadata: s.metadata(),
                 })
                 .transform((data) => {
-                    const slug = data.slug.split('/').pop();
+                    const slug = data.slug.split('/').pop() ?? data.slug;
                     return {
                         ...data,
                         slug,
