@@ -2,10 +2,16 @@ import Link from "next/link";
 import { posts } from "#site/content";
 import { formatDate } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 interface PageProps {
-  searchParams?: {
-    tag?: string;
-  };
+  searchParams?:
+    | {
+        tag?: string | string[];
+      }
+    | Promise<{
+        tag?: string | string[];
+      }>;
 }
 
 function getAllTags() {
@@ -22,9 +28,11 @@ function getAllTags() {
     .map(([name, count]) => ({ name, count }));
 }
 
-export default function PostsPage({ searchParams }: PageProps) {
-  const tagParam = searchParams?.tag;
-  const selectedTag = tagParam ? decodeURIComponent(tagParam) : null;
+export default async function PostsPage({ searchParams }: PageProps) {
+  const resolvedSearchParams = await Promise.resolve(searchParams);
+  const tagParam = resolvedSearchParams?.tag;
+  const tagValue = Array.isArray(tagParam) ? tagParam[0] : tagParam;
+  const selectedTag = tagValue ? decodeURIComponent(tagValue) : null;
 
   const sortedPosts = posts
     .slice()

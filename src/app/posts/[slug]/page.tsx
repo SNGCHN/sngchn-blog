@@ -8,7 +8,7 @@ import { FloatingMenu } from "@/components/ui/floating-menu";
 import type { Metadata } from "next";
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: { slug: string } | Promise<{ slug: string }>;
 }
 
 type TocItem = {
@@ -50,8 +50,9 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const post = posts.find((p) => p.slug === slug);
+  const { slug } = await Promise.resolve(params);
+  const decodedSlug = decodeURIComponent(slug);
+  const post = posts.find((p) => p.slug === decodedSlug);
 
   if (!post) return {};
 
@@ -62,15 +63,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function PostPage({ params }: PageProps) {
-  const { slug } = await params;
-  const post = posts.find((p) => p.slug === slug);
+  const { slug } = await Promise.resolve(params);
+  const decodedSlug = decodeURIComponent(slug);
+  const post = posts.find((p) => p.slug === decodedSlug);
 
   if (!post) return notFound();
 
   const sortedPosts = posts
     .slice()
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  const postIndex = sortedPosts.findIndex((p) => p.slug === slug);
+  const postIndex = sortedPosts.findIndex((p) => p.slug === decodedSlug);
   const prevPost =
     postIndex < sortedPosts.length - 1 ? sortedPosts[postIndex + 1] : null;
   const nextPost = postIndex > 0 ? sortedPosts[postIndex - 1] : null;

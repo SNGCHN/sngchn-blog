@@ -6,7 +6,10 @@
 
 @theme {
   /* 폰트 */
-  --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --font-sans:
+    "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont,
+    system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo",
+    "Noto Sans KR", "Malgun Gothic", sans-serif;
   --font-mono: var(--font-geist-mono), "JetBrains Mono", "Fira Code", monospace;
 
   /* 색상 변수 매핑 */
@@ -25,9 +28,16 @@
     --text-muted: #737367;
     --border-color: #e8e6e1;
     --color-primary: #52524e;
+    --inline-code-bg: #f4f1ea;
+    --inline-code-fg: #1f1f1c;
+    --inline-code-border: #e2dbd0;
+    --radius-sm: 0.375rem;
+    --radius-md: 0.625rem;
+    --radius-lg: 0.875rem;
+    --scroll-offset: 96px;
   }
 
-  /* 시스템이 다크모드일 때 자동 적용 (CSS만으로 FOUC 없음) */
+  /* 다크모드 */
   @media (prefers-color-scheme: dark) {
     :root {
       --bg-primary: #121211;
@@ -35,25 +45,32 @@
       --text-muted: #94948d;
       --border-color: #2b2b2a;
       --color-primary: #d6d3cc;
+      --inline-code-bg: #2f2d2a;
+      --inline-code-fg: #f7f3ea;
+      --inline-code-border: #3d3a34;
     }
   }
 
-  /* 수동 오버라이드: 사용자가 라이트 선택 */
   [data-theme="light"] {
     --bg-primary: #fdfcfb;
     --text-primary: #1c1c1c;
     --text-muted: #737367;
     --border-color: #e8e6e1;
     --color-primary: #52524e;
+    --inline-code-bg: #f4f1ea;
+    --inline-code-fg: #1f1f1c;
+    --inline-code-border: #e2dbd0;
   }
 
-  /* 수동 오버라이드: 사용자가 다크 선택 */
   [data-theme="dark"] {
     --bg-primary: #121211;
     --text-primary: #edece9;
     --text-muted: #94948d;
     --border-color: #2b2b2a;
     --color-primary: #d6d3cc;
+    --inline-code-bg: #2f2d2a;
+    --inline-code-fg: #f7f3ea;
+    --inline-code-border: #3d3a34;
   }
 
   * {
@@ -62,6 +79,7 @@
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: var(--scroll-offset);
   }
 
   body {
@@ -71,11 +89,18 @@
     letter-spacing: -0.025em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
   }
 
   /* 헤딩 스타일 */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 0.9;
@@ -105,7 +130,7 @@
     --tw-prose-quotes: var(--text-primary);
     --tw-prose-quote-borders: var(--border-color);
     --tw-prose-captions: var(--text-muted);
-    --tw-prose-code: var(--color-primary);
+    --tw-prose-code: var(--inline-code-fg);
     --tw-prose-pre-code: #edece9;
     --tw-prose-pre-bg: #1c1c1c;
     --tw-prose-th-borders: var(--border-color);
@@ -120,10 +145,23 @@
     margin-bottom: 1.5rem;
   }
 
-  .prose h1, .prose h2, .prose h3, .prose h4 {
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
     color: var(--text-primary);
     margin-top: 3rem;
     margin-bottom: 1.5rem;
+    scroll-margin-top: var(--scroll-offset);
+  }
+
+  .prose h1,
+  .prose h2 {
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid
+      color-mix(in oklab, var(--border-color) 70%, transparent);
   }
 
   .prose strong {
@@ -150,19 +188,18 @@
     font-size: 0.9em;
     font-weight: 500;
     padding: 0.125rem 0.375rem;
-    border-radius: 0.375rem;
-    background-color: color-mix(in oklab, var(--text-muted) 10%, transparent);
-    color: var(--color-primary);
+    border-radius: var(--radius-sm);
   }
 
   .prose pre {
     background-color: #1c1c1c;
     color: #edece9;
-    padding: 1.25rem;
-    border-radius: 0.625rem;
+    padding: 2.75rem 1.25rem 1.25rem;
+    border-radius: var(--radius-md);
     overflow-x: auto;
     margin-bottom: 2rem;
     border: 1px solid color-mix(in oklab, var(--border-color) 50%, transparent);
+    position: relative;
   }
 
   .prose pre code {
@@ -170,6 +207,99 @@
     color: inherit;
     padding: 0;
     font-size: 0.875rem;
+    border: 0;
+  }
+
+  .prose pre ::selection {
+    background-color: color-mix(in oklab, #ffffff 25%, transparent);
+    color: #0f0f0f;
+  }
+
+  .code-copy-button {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid color-mix(in oklab, #ffffff 22%, transparent);
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, #ffffff 15%, transparent) 0%,
+      color-mix(in oklab, #ffffff 8%, transparent) 100%
+    );
+    color: #f5f4f2;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px color-mix(in oklab, #000000 30%, transparent);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .code-copy-button .icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+
+  .code-copy-button .text-copy {
+    display: inline-block;
+  }
+
+  .prose pre:hover .code-copy-button,
+  .prose pre:focus-within .code-copy-button {
+    opacity: 1;
+  }
+
+  .code-copy-button:hover {
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, #ffffff 22%, transparent) 0%,
+      color-mix(in oklab, #ffffff 15%, transparent) 100%
+    );
+    border-color: color-mix(in oklab, #ffffff 40%, transparent);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px color-mix(in oklab, #000000 40%, transparent);
+  }
+
+  .code-copy-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px color-mix(in oklab, #000000 30%, transparent);
+  }
+
+  .code-copy-button.success {
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, #10b981 50%, transparent) 0%,
+      color-mix(in oklab, #059669 50%, transparent) 100%
+    );
+    border-color: color-mix(in oklab, #10b981 40%, transparent);
+  }
+
+  .code-copy-button.error {
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, #ef4444 50%, transparent) 0%,
+      color-mix(in oklab, #dc2626 50%, transparent) 100%
+    );
+    border-color: color-mix(in oklab, #ef4444 40%, transparent);
+  }
+
+  .code-copy-button:focus-visible {
+    outline: 2px solid color-mix(in oklab, #ffffff 50%, transparent);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 1023px) {
+    .code-copy-button {
+      opacity: 1;
+    }
   }
 
   .prose a {
@@ -181,6 +311,10 @@
 
   .prose a:hover {
     color: var(--text-primary);
+  }
+
+  .prose img {
+    border-radius: var(--radius-md);
   }
 
   .prose blockquote {
@@ -204,21 +338,38 @@
     --tw-prose-quotes: var(--text-primary);
     --tw-prose-quote-borders: var(--border-color);
     --tw-prose-captions: var(--text-muted);
-    --tw-prose-code: var(--color-primary);
+    --tw-prose-code: var(--inline-code-fg);
     --tw-prose-pre-code: #edece9;
     --tw-prose-pre-bg: #1c1c1c;
     --tw-prose-th-borders: var(--border-color);
     --tw-prose-td-borders: var(--border-color);
   }
 
-  .prose :where(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a) {
+  .prose :where(h1, h2, h3, h4, h5, h6) a {
     color: inherit;
+    text-decoration: none !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border-bottom: none !important;
+    padding-bottom: 0;
   }
 }
 
 @layer utilities {
   .prose :where(p, li, h1, h2, h3, h4, h5, h6, strong, em, blockquote) {
     color: var(--text-primary);
+  }
+
+  .prose :not(pre) > code {
+    background-color: var(--inline-code-bg);
+    color: var(--inline-code-fg);
+    border: 1px solid var(--inline-code-border);
+    box-shadow: inset 0 -1px 0 color-mix(in oklab, #000000 10%, transparent);
+  }
+
+  .prose :not(pre) > code::before,
+  .prose :not(pre) > code::after {
+    content: "";
   }
 
   .prose :where(a) {

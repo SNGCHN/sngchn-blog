@@ -30,12 +30,13 @@ export default function Home() {
         <div className="absolute -top-20 -left-20 w-64 h-64 bg-warm-primary/5 rounded-full blur-3xl opacity-50 pointer-events-none" />
 
         <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-[-0.03em] text-warm-text mb-8 leading-[0.9] break-keep">
-          본질을 채워넣는 <br className="hidden md:block" />
-          개발 블로그
+          본질을 찾고, <br className="hidden md:block" />
+          배움을 정리하는 공간
         </h1>
         <p className="text-xl md:text-2xl text-warm-muted max-w-xl leading-relaxed font-medium tracking-tight">
-          개발 경험과 지식을 기록하는 <br className="md:hidden" />
-          공간입니다.
+          배운 것을 정리하고,{" "}
+          <br className="md:hidden" />
+          다시 꺼내볼 수 있게 남깁니다.
         </p>
       </section>
 
