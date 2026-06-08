@@ -109,10 +109,10 @@ export default function Home() {
             <Link
               key={tag.name}
               href={`/tags/${encodeURIComponent(tag.name)}`}
-              className="px-5 py-2.5 rounded-xl border border-warm-border text-warm-muted font-medium hover:border-warm-primary hover:text-warm-text hover:bg-warm-bg shadow-sm hover:shadow transition-all duration-300 bg-warm-bg/50"
+              className="inline-flex items-center gap-1.5 rounded-full bg-warm-muted/10 px-4 py-2 text-sm font-medium text-warm-muted transition-colors hover:bg-warm-primary/10 hover:text-warm-primary"
             >
-              {tag.name}{" "}
-              <span className="ml-1 opacity-40 text-xs">({tag.count})</span>
+              <span>#{tag.name}</span>
+              <span className="text-xs text-warm-muted/50">({tag.count})</span>
             </Link>
           ))}
         </div>

@@ -73,6 +73,40 @@
     --inline-code-border: #3d3a34;
   }
 
+  .theme-icon-sun {
+    display: none;
+  }
+
+  .theme-icon-moon {
+    display: block;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .theme-icon-sun {
+      display: block;
+    }
+
+    :root:not([data-theme="light"]) .theme-icon-moon {
+      display: none;
+    }
+  }
+
+  [data-theme="dark"] .theme-icon-sun {
+    display: block;
+  }
+
+  [data-theme="dark"] .theme-icon-moon {
+    display: none;
+  }
+
+  [data-theme="light"] .theme-icon-sun {
+    display: none;
+  }
+
+  [data-theme="light"] .theme-icon-moon {
+    display: block;
+  }
+
   * {
     border-color: var(--border-color);
   }
@@ -86,7 +120,7 @@
     background-color: var(--bg-primary);
     color: var(--text-primary);
     font-family: var(--font-sans);
-    letter-spacing: -0.025em;
+    letter-spacing: -0.01em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition:
@@ -103,7 +137,7 @@
   h6 {
     font-weight: 700;
     letter-spacing: -0.02em;
-    line-height: 0.9;
+    line-height: 1.25;
   }
 
   /* 선택 영역 */
@@ -135,14 +169,17 @@
     --tw-prose-pre-bg: #1c1c1c;
     --tw-prose-th-borders: var(--border-color);
     --tw-prose-td-borders: var(--border-color);
-    max-width: 65ch;
-    font-size: 1rem;
-    line-height: 1.625;
+    max-width: 50rem;
+    font-size: 1.125rem;
+    line-height: 1.85;
+    letter-spacing: normal;
+    word-break: keep-all;
+    overflow-wrap: break-word;
     color: var(--text-primary);
   }
 
   .prose p {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
   }
 
   .prose h1,
@@ -152,16 +189,14 @@
   .prose h5,
   .prose h6 {
     color: var(--text-primary);
-    margin-top: 3rem;
+    margin-top: 3.5rem;
     margin-bottom: 1.5rem;
     scroll-margin-top: var(--scroll-offset);
   }
 
   .prose h1,
   .prose h2 {
-    padding-bottom: 0.35rem;
-    border-bottom: 1px solid
-      color-mix(in oklab, var(--border-color) 70%, transparent);
+    padding-bottom: 0;
   }
 
   .prose strong {
@@ -194,7 +229,7 @@
   .prose pre {
     background-color: #1c1c1c;
     color: #edece9;
-    padding: 2.75rem 1.25rem 1.25rem;
+    padding: 2rem 1.25rem 1.25rem;
     border-radius: var(--radius-md);
     overflow-x: auto;
     margin-bottom: 2rem;

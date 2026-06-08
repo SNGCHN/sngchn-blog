@@ -5,44 +5,19 @@ import { MDXContent } from "@/components/mdx-content";
 import { formatDate } from "@/lib/utils";
 import { LikeButton } from "@/components/ui/like-button";
 import { FloatingMenu } from "@/components/ui/floating-menu";
+import {
+  SeriesTableOfContents,
+  type SeriesInfo,
+  type SeriesPost,
+} from "@/components/series-table-of-contents";
+import { TableOfContents, type TocItem } from "@/components/table-of-contents";
+import { ReadingProgress } from "@/components/reading-progress";
+import { GiscusComments } from "@/components/giscus-comments";
+import { getLikes } from "@/app/actions";
 import type { Metadata } from "next";
 
 interface PageProps {
   params: { slug: string } | Promise<{ slug: string }>;
-}
-
-type TocItem = {
-  title: string;
-  url: string;
-  items?: TocItem[];
-};
-
-function TocList({ items, depth = 0 }: { items: TocItem[]; depth?: number }) {
-  if (!items || items.length === 0) return null;
-
-  return (
-    <ul
-      className={
-        depth === 0
-          ? "space-y-4 text-sm border-l border-warm-border pl-4"
-          : "mt-3 space-y-3 pl-4"
-      }
-    >
-      {items.map((item) => (
-        <li key={item.url}>
-          <a
-            href={item.url}
-            className="block text-warm-muted hover:text-warm-text transition-colors -ml-[17px] border-l-2 border-transparent hover:border-warm-muted pl-4 py-1"
-          >
-            {item.title}
-          </a>
-          {item.items && item.items.length > 0 ? (
-            <TocList items={item.items} depth={depth + 1} />
-          ) : null}
-        </li>
-      ))}
-    </ul>
-  );
 }
 
 export async function generateStaticParams() {
@@ -76,9 +51,28 @@ export default async function PostPage({ params }: PageProps) {
   const prevPost =
     postIndex < sortedPosts.length - 1 ? sortedPosts[postIndex + 1] : null;
   const nextPost = postIndex > 0 ? sortedPosts[postIndex - 1] : null;
+  const currentSeries = (post as { series?: SeriesInfo }).series;
+  const seriesPosts: SeriesPost[] = currentSeries
+    ? sortedPosts
+        .map((seriesPost) => ({
+          title: seriesPost.title,
+          slug: seriesPost.slug,
+          date: seriesPost.date,
+          series: (seriesPost as { series?: SeriesInfo }).series,
+        }))
+        .filter(
+          (seriesPost) => seriesPost.series?.slug === currentSeries.slug
+        )
+    : [];
+  const tocItems = ((post.toc as TocItem[]) ?? []).filter(
+    (item) => item.url && item.title
+  );
+  const initialLikes = await getLikes(post.slug);
 
   return (
-    <main className="max-w-5xl mx-auto px-4 sm:px-6 py-16 relative">
+    <main className="max-w-6xl mx-auto px-4 sm:px-6 py-16 relative">
+      <ReadingProgress />
+
       <Link
         href="/posts"
         className="mb-12 inline-flex items-center gap-2 text-sm font-medium text-warm-muted hover:text-warm-text transition-colors duration-300 group"
@@ -102,18 +96,31 @@ export default async function PostPage({ params }: PageProps) {
         목록으로 돌아가기
       </Link>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-16">
+      <div
+        className={
+          tocItems.length > 0
+            ? "grid grid-cols-1 lg:grid-cols-[1fr_220px] gap-12"
+            : "grid grid-cols-1 gap-16"
+        }
+      >
         <article className="min-w-0">
+          <SeriesTableOfContents
+            currentSlug={post.slug}
+            currentSeries={currentSeries}
+            posts={seriesPosts}
+          />
+
           <header className="mb-12 border-b border-warm-border pb-8">
             {post.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-6">
                 {post.tags.map((tag) => (
-                  <span
+                  <Link
                     key={tag}
+                    href={`/tags/${encodeURIComponent(tag)}`}
                     className="text-xs font-semibold tracking-wide text-warm-primary uppercase bg-warm-muted/10 px-2 py-1 rounded-md"
                   >
-                    {tag}
-                  </span>
+                    #{tag}
+                  </Link>
                 ))}
               </div>
             )}
@@ -167,7 +174,7 @@ export default async function PostPage({ params }: PageProps) {
                   {post.metadata.readingTime} min read
                 </span>
               </div>
-              <LikeButton initialLikes={0} />
+              <LikeButton slug={post.slug} initialLikes={initialLikes} />
             </div>
           </header>
 
@@ -255,26 +262,23 @@ export default async function PostPage({ params }: PageProps) {
               </svg>
               댓글
             </h3>
-            <div className="min-h-[240px] flex flex-col items-center justify-center bg-warm-muted/5 border border-warm-border rounded-2xl p-8 text-center hover:border-warm-muted/30 transition-colors duration-300">
-              <p className="text-warm-muted mb-4 font-medium">Giscus 댓글 영역</p>
-              <p className="text-sm text-warm-muted/70 max-w-md break-keep">
-                GitHub 계정으로 로그인하여 댓글을 남겨주세요.
-              </p>
-            </div>
+            <GiscusComments />
           </div>
         </article>
 
-        <aside className="hidden lg:block">
-          <div className="sticky top-32">
-            <h4 className="text-xs font-bold text-warm-text uppercase tracking-wider mb-6 opacity-40">
-              On this page
-            </h4>
-            <TocList items={(post.toc as TocItem[]) ?? []} />
-          </div>
-        </aside>
+        {tocItems.length > 0 ? (
+          <aside className="hidden lg:block">
+            <div className="sticky top-32">
+              <h4 className="text-xs font-bold text-warm-text uppercase tracking-wider mb-6 opacity-40">
+                On this page
+              </h4>
+              <TableOfContents items={tocItems} />
+            </div>
+          </aside>
+        ) : null}
       </div>
 
-      <FloatingMenu initialLikes={0} />
+      <FloatingMenu slug={post.slug} initialLikes={initialLikes} />
     </main>
   );
 }

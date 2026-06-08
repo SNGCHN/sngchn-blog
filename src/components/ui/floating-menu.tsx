@@ -2,14 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useLike } from "@/hooks/use-like";
 
 interface FloatingMenuProps {
+  slug: string;
   initialLikes: number;
 }
 
-export function FloatingMenu({ initialLikes }: FloatingMenuProps) {
-  const [likes, setLikes] = useState(initialLikes);
-  const [isLiked, setIsLiked] = useState(false);
+export function FloatingMenu({ slug, initialLikes }: FloatingMenuProps) {
+  const { likes, isLiked, handleLike } = useLike(slug, initialLikes);
   const [showTopButton, setShowTopButton] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -68,16 +69,6 @@ export function FloatingMenu({ initialLikes }: FloatingMenuProps) {
     };
   }, [isDesktop]);
 
-  const handleLike = () => {
-    if (isLiked) {
-      setLikes((prev) => prev - 1);
-      setIsLiked(false);
-    } else {
-      setLikes((prev) => prev + 1);
-      setIsLiked(true);
-    }
-  };
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -128,63 +119,43 @@ export function FloatingMenu({ initialLikes }: FloatingMenuProps) {
           "lg:bottom-12 lg:left-auto lg:right-12 lg:translate-x-0 lg:flex-col lg:items-end lg:gap-4"
         )}
       >
-      <div className={actionWrapperClass}>
-        <span className="hidden lg:block absolute right-full mr-3 px-2 py-1 bg-warm-text/80 text-warm-bg text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none backdrop-blur-sm">
-          좋아요 {likes}
-        </span>
-        <button
-          onClick={handleLike}
-          className={cn(buttonClass, isLiked && "text-red-500")}
-          aria-label="좋아요"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill={isLiked ? "currentColor" : "none"}
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z" />
-          </svg>
-        </button>
-      </div>
-
-      <div className={actionWrapperClass}>
-        <span className="hidden lg:block absolute right-full mr-3 px-2 py-1 bg-warm-text/80 text-warm-bg text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-sm backdrop-blur-sm">
-          댓글 보기
-        </span>
-        <button onClick={scrollToComments} className={buttonClass} aria-label="댓글 보기">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z" />
-          </svg>
-        </button>
-      </div>
-
-        <div className={topDesktopWrapperClass}>
-          <div
-            className={cn(
-              "relative group flex items-center justify-center lg:justify-end",
-              topDesktopInnerClass
-            )}
-          >
-          <span className="hidden lg:block absolute right-full mr-3 px-2 py-1 bg-warm-text/80 text-warm-bg text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-sm backdrop-blur-sm">
-            맨 위로
+        <div className={actionWrapperClass}>
+          <span className="hidden lg:block absolute right-full mr-3 px-2 py-1 bg-warm-text/80 text-warm-bg text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none backdrop-blur-sm">
+            좋아요 {likes}
           </span>
-          <button onClick={scrollToTop} className={buttonClass} aria-label="맨 위로">
+          <button
+            type="button"
+            onClick={handleLike}
+            className={cn(buttonClass, isLiked && "text-red-500")}
+            aria-label="좋아요"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill={isLiked ? "currentColor" : "none"}
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z" />
+            </svg>
+          </button>
+        </div>
+
+        <div className={actionWrapperClass}>
+          <span className="hidden lg:block absolute right-full mr-3 px-2 py-1 bg-warm-text/80 text-warm-bg text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-sm backdrop-blur-sm">
+            댓글 보기
+          </span>
+          <button
+            type="button"
+            onClick={scrollToComments}
+            className={buttonClass}
+            aria-label="댓글 보기"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="18"
@@ -195,17 +166,56 @@ export function FloatingMenu({ initialLikes }: FloatingMenuProps) {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
+              aria-hidden="true"
             >
-              <path d="M12 19V5" />
-              <path d="m5 12 7-7 7 7" />
+              <path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z" />
             </svg>
           </button>
         </div>
+
+        <div className={topDesktopWrapperClass}>
+          <div
+            className={cn(
+              "relative group flex items-center justify-center lg:justify-end",
+              topDesktopInnerClass
+            )}
+          >
+            <span className="hidden lg:block absolute right-full mr-3 px-2 py-1 bg-warm-text/80 text-warm-bg text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-sm backdrop-blur-sm">
+              맨 위로
+            </span>
+            <button
+              type="button"
+              onClick={scrollToTop}
+              className={buttonClass}
+              aria-label="맨 위로"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 19V5" />
+                <path d="m5 12 7-7 7 7" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
       <div className={topMobileWrapperClass}>
-        <button onClick={scrollToTop} className={buttonClass} aria-label="맨 위로">
+        <button
+          type="button"
+          onClick={scrollToTop}
+          className={buttonClass}
+          aria-label="맨 위로"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="18"
@@ -216,6 +226,7 @@ export function FloatingMenu({ initialLikes }: FloatingMenuProps) {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            aria-hidden="true"
           >
             <path d="M12 19V5" />
             <path d="m5 12 7-7 7 7" />

@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { type SVGProps, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { SearchDialog, type SearchPost } from "@/components/search-dialog";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const navLinks = [
@@ -12,6 +13,31 @@ const navLinks = [
   { label: "태그", href: "/tags" },
   { label: "소개", href: "/about" },
 ];
+
+interface HeaderProps {
+  searchPosts: SearchPost[];
+}
+
+function SearchIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  );
+}
 
 /**
  * 블로그 헤더 컴포넌트
@@ -23,9 +49,22 @@ const navLinks = [
  * - 테마 토글
  * - Portfolio 외부 링크
  */
-export function Header() {
+export function Header({ searchPosts }: HeaderProps) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <header
@@ -65,6 +104,22 @@ export function Header() {
 
         {/* 데스크탑 우측 영역 */}
         <div className="hidden md:flex items-center gap-6">
+          <button
+            type="button"
+            onClick={() => setIsSearchOpen(true)}
+            className={cn(
+              "group inline-flex items-center gap-2 rounded-lg",
+              "border border-warm-border bg-warm-bg/50 px-3 py-1.5",
+              "text-warm-muted transition-colors duration-300",
+              "hover:border-warm-primary/50 hover:text-warm-text"
+            )}
+            aria-label="Open search"
+          >
+            <SearchIcon className="h-4 w-4" />
+            <span className="text-xs font-mono opacity-70 transition-opacity group-hover:opacity-100">
+              Ctrl + K
+            </span>
+          </button>
           <ThemeToggle />
           <a
             href="https://sngchn.dev"
@@ -98,6 +153,14 @@ export function Header() {
 
         {/* 모바일 우측 영역 */}
         <div className="flex md:hidden items-center gap-4">
+          <button
+            type="button"
+            onClick={() => setIsSearchOpen(true)}
+            className="text-warm-text"
+            aria-label="Open search"
+          >
+            <SearchIcon className="h-5 w-5" />
+          </button>
           <ThemeToggle />
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -188,6 +251,11 @@ export function Header() {
           </div>
         </div>
       )}
+      <SearchDialog
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        posts={searchPosts}
+      />
     </header>
   );
 }

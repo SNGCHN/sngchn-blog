@@ -33,6 +33,13 @@ export default defineConfig({
                     date: s.isodate(),
                     description: s.string().optional(),
                     tags: s.array(s.string()).default([]),
+                    series: s
+                        .object({
+                            name: s.string(),
+                            slug: s.string(),
+                            order: s.number(),
+                        })
+                        .optional(),
                     code: s.mdx(),
                     toc: s.toc(),
                     metadata: s.metadata(),

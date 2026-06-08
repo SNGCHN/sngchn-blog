@@ -35,13 +35,11 @@ export default function TagsPage() {
           <Link
             key={tag.name}
             href={`/tags/${encodeURIComponent(tag.name)}`}
-            className="group flex items-center justify-between gap-4 px-5 py-3 rounded-lg border border-warm-border hover:border-warm-primary transition-all duration-300 min-w-[160px]"
+            className="group inline-flex items-center gap-2 rounded-full bg-warm-muted/10 px-4 py-2 text-sm font-medium text-warm-muted transition-colors hover:bg-warm-primary/10 hover:text-warm-primary"
           >
-            <span className="font-medium text-warm-text group-hover:text-warm-primary transition-colors">
-              {tag.name}
-            </span>
-            <span className="text-xs font-mono text-warm-muted">
-              {tag.count}
+            <span>#{tag.name}</span>
+            <span className="text-xs text-warm-muted/50 group-hover:text-warm-primary/60">
+              ({tag.count})
             </span>
           </Link>
         ))}
