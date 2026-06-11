@@ -145,7 +145,7 @@ body,
 
 .gsc-comment-box-textarea-extras {
   background: #1d1d1c;
-  border-top: 1px solid #2b2b2a;
+  border-top: none;
 }
 
 /* textarea는 가장 어둡게 — 파인 입력 필드 느낌 */
@@ -167,7 +167,7 @@ body,
 
 .gsc-comment-box-bottom {
   background: #1d1d1c;
-  border-top: 1px solid #2b2b2a;
+  border-top: none;
 }
 
 .gsc-comment-box-md-toolbar button {

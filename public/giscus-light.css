@@ -145,7 +145,7 @@ body,
 
 .gsc-comment-box-textarea-extras {
   background: #fdfcfb;
-  border-top: 1px solid #e8e6e1;
+  border-top: none;
 }
 
 /* textarea는 가장 밝게 — 입력 필드임을 명확히 */
@@ -167,7 +167,7 @@ body,
 
 .gsc-comment-box-bottom {
   background: #fdfcfb;
-  border-top: 1px solid #e8e6e1;
+  border-top: none;
 }
 
 .gsc-comment-box-md-toolbar button {
