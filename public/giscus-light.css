@@ -105,6 +105,12 @@ body,
   color: #1c1c1c;
 }
 
+/* 박스 보더가 iframe 가장자리 픽셀에 딱 붙으면 서브픽셀 반올림으로
+   오른쪽 보더가 잘려 보인다 — 1px 여유를 줘서 안쪽으로 들여온다 */
+body {
+  padding: 0 1px;
+}
+
 .gsc-header,
 .gsc-left-header {
   color: #1c1c1c;
@@ -143,9 +149,9 @@ body,
   background: #fdfcfb;
 }
 
+/* textarea 아래 "마크다운 형식 지원" 안내 줄은 숨긴다 */
 .gsc-comment-box-textarea-extras {
-  background: #fdfcfb;
-  border-top: none;
+  display: none;
 }
 
 /* textarea는 가장 밝게 — 입력 필드임을 명확히 */
