@@ -75,7 +75,7 @@ export function Header({ searchPosts }: HeaderProps) {
         "backdrop-blur-md transition-colors duration-300"
       )}
     >
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* 로고 */}
         <Link
           href="/"

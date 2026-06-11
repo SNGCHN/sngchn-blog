@@ -13,18 +13,22 @@ function getGiscusTheme() {
     (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
   // giscus.app(HTTPS) iframe에서 http://localhost CSS를 fetch하면
-  // mixed content로 브라우저가 차단하므로, 로컬에서는 내장 테마 사용
+  // mixed content로 브라우저가 차단하므로, 로컬에서는 배포된 사이트의
+  // CSS(NEXT_PUBLIC_SITE_URL)를 대신 사용한다.
   const isLocalhost = ["localhost", "127.0.0.1"].includes(
     window.location.hostname,
   );
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "");
+  const cssOrigin = isLocalhost ? siteUrl : window.location.origin;
 
-  if (isLocalhost) {
+  // 로컬인데 배포 주소도 모르면 내장 테마로 폴백
+  if (!cssOrigin) {
     return isDark ? "dark_dimmed" : "light";
   }
 
   return isDark
-    ? `${window.location.origin}/giscus-dark.css`
-    : `${window.location.origin}/giscus-light.css`;
+    ? `${cssOrigin}/giscus-dark.css`
+    : `${cssOrigin}/giscus-light.css`;
 }
 
 export function GiscusComments() {

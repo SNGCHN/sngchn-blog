@@ -1,20 +1,20 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { posts } from "#site/content";
+import { getLikes } from "@/app/actions";
+import { GiscusComments } from "@/components/giscus-comments";
 import { MDXContent } from "@/components/mdx-content";
-import { formatDate } from "@/lib/utils";
-import { LikeButton } from "@/components/ui/like-button";
-import { FloatingMenu } from "@/components/ui/floating-menu";
+import { ReadingProgress } from "@/components/reading-progress";
 import {
-  SeriesTableOfContents,
   type SeriesInfo,
   type SeriesPost,
+  SeriesTableOfContents,
 } from "@/components/series-table-of-contents";
 import { TableOfContents, type TocItem } from "@/components/table-of-contents";
-import { ReadingProgress } from "@/components/reading-progress";
-import { GiscusComments } from "@/components/giscus-comments";
-import { getLikes } from "@/app/actions";
-import type { Metadata } from "next";
+import { FloatingMenu } from "@/components/ui/floating-menu";
+import { LikeButton } from "@/components/ui/like-button";
+import { formatDate } from "@/lib/utils";
 
 interface PageProps {
   params: { slug: string } | Promise<{ slug: string }>;
@@ -24,7 +24,9 @@ export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }));
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await Promise.resolve(params);
   const decodedSlug = decodeURIComponent(slug);
   const post = posts.find((p) => p.slug === decodedSlug);
@@ -54,23 +56,21 @@ export default async function PostPage({ params }: PageProps) {
   const currentSeries = (post as { series?: SeriesInfo }).series;
   const seriesPosts: SeriesPost[] = currentSeries
     ? sortedPosts
-        .map((seriesPost) => ({
-          title: seriesPost.title,
-          slug: seriesPost.slug,
-          date: seriesPost.date,
-          series: (seriesPost as { series?: SeriesInfo }).series,
-        }))
-        .filter(
-          (seriesPost) => seriesPost.series?.slug === currentSeries.slug
-        )
+      .map((seriesPost) => ({
+        title: seriesPost.title,
+        slug: seriesPost.slug,
+        date: seriesPost.date,
+        series: (seriesPost as { series?: SeriesInfo }).series,
+      }))
+      .filter((seriesPost) => seriesPost.series?.slug === currentSeries.slug)
     : [];
   const tocItems = ((post.toc as TocItem[]) ?? []).filter(
-    (item) => item.url && item.title
+    (item) => item.url && item.title,
   );
   const initialLikes = await getLikes(post.slug);
 
   return (
-    <main className="max-w-6xl mx-auto px-4 sm:px-6 py-16 relative">
+    <main className="max-w-5xl mx-auto px-4 sm:px-6 py-16 relative">
       <ReadingProgress />
 
       <Link

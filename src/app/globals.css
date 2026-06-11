@@ -189,29 +189,75 @@
   .prose h5,
   .prose h6 {
     color: var(--text-primary);
-    margin-top: 3.5rem;
-    margin-bottom: 1.5rem;
     scroll-margin-top: var(--scroll-offset);
   }
 
-  .prose h1,
+  /* # 장(章) 구분 — 큰 섹션. 위 여백을 넉넉히 주고 옅은 구분선으로 경계를 만든다. */
+  .prose h1 {
+    font-size: 2.125rem;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.25;
+    margin-top: 4.5rem;
+    margin-bottom: 1.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--border-color);
+  }
+
+  /* ## 소제목 */
   .prose h2 {
-    padding-bottom: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.35;
+    margin-top: 3.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  /* ### 하위 항목 */
+  .prose h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.4;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 0.875rem;
+  }
+
+  /* 본문 첫 제목은 상단 구분선·여백 없이 시작 (글 헤더와 중복 방지) */
+  .prose > :first-child {
+    margin-top: 0;
+  }
+
+  .prose h1:first-child {
+    padding-top: 0;
+    border-top: none;
   }
 
   .prose strong {
     color: var(--text-primary);
-    font-weight: 600;
+    font-weight: 700;
   }
 
+  /* 리스트 — 마커를 바깥에 두어 줄바꿈된 텍스트가 들여쓰기 라인에 정렬되게 */
   .prose ul {
     list-style-type: disc;
-    list-style-position: inside;
-    margin-bottom: 1.5rem;
+    list-style-position: outside;
+    padding-left: 1.375rem;
+    margin-bottom: 1.75rem;
   }
 
   .prose ul li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.625rem;
+    padding-left: 0.25rem;
   }
 
   .prose ul ::marker {

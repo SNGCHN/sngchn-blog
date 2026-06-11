@@ -8,7 +8,7 @@
 export function Footer() {
   return (
     <footer className="border-t border-warm-border py-12 mt-20">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row justify-between items-center gap-6">
         <p className="text-sm text-warm-muted">
           &copy; {new Date().getFullYear()} sngchn. All rights reserved.
         </p>

@@ -1,6 +1,6 @@
 export default function AboutPage() {
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
       <h1 className="text-3xl font-bold text-warm-text mb-12 tracking-tight">
         소개
       </h1>

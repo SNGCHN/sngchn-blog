@@ -24,7 +24,7 @@ export default function Home() {
   const popularTags = getAllTags().slice(0, 6);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-20 md:py-32">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-20 md:py-32">
       {/* Hero */}
       <section className="mb-32 relative">
         <div className="absolute -top-20 -left-20 w-64 h-64 bg-warm-primary/5 rounded-full blur-3xl opacity-50 pointer-events-none" />

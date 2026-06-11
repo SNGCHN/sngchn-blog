@@ -1,3 +1,6 @@
+/* giscus 커스텀 테마 — 사이트 디자인 토큰(라이트)과 동일한 팔레트
+   base #fdfcfb / subtle #f4f1ea / border #e8e6e1 / text #1c1c1c
+   muted #737367 / accent #52524e */
 :root {
   color-scheme: light;
 
@@ -24,24 +27,24 @@
   --color-prettylights-syntax-markup-inserted-text: #2f6f3e;
   --color-prettylights-syntax-markup-inserted-bg: #dff0df;
   --color-prettylights-syntax-markup-changed-text: #7b5d3a;
-  --color-prettylights-syntax-markup-changed-bg: #f2e4ca;
+  --color-prettylights-syntax-markup-changed-bg: #f4f1ea;
   --color-prettylights-syntax-markup-ignored-text: #737367;
-  --color-prettylights-syntax-markup-ignored-bg: #ede8dd;
+  --color-prettylights-syntax-markup-ignored-bg: #f4f1ea;
   --color-prettylights-syntax-meta-diff-range: #52524e;
   --color-prettylights-syntax-brackethighlighter-angle: #737367;
-  --color-prettylights-syntax-sublimelinter-gutter-mark: #beb7ac;
+  --color-prettylights-syntax-sublimelinter-gutter-mark: #e8e6e1;
   --color-prettylights-syntax-constant-other-reference-link: #52524e;
 
   --color-btn-text: #1c1c1c;
   --color-btn-bg: #fdfcfb;
-  --color-btn-border: #beb7ac;
+  --color-btn-border: #e8e6e1;
   --color-btn-shadow: none;
   --color-btn-inset-shadow: none;
-  --color-btn-hover-bg: #ede8dd;
-  --color-btn-hover-border: #a8a19a;
-  --color-btn-active-bg: #e5ddd0;
-  --color-btn-active-border: #a8a19a;
-  --color-btn-selected-bg: #e5ddd0;
+  --color-btn-hover-bg: #f4f1ea;
+  --color-btn-hover-border: #d8d5cf;
+  --color-btn-active-bg: #efece5;
+  --color-btn-active-border: #d8d5cf;
+  --color-btn-selected-bg: #efece5;
   --color-btn-primary-text: #fdfcfb;
   --color-btn-primary-bg: #52524e;
   --color-btn-primary-border: #52524e;
@@ -55,24 +58,24 @@
   --color-btn-primary-disabled-bg: rgba(82, 82, 78, 0.5);
   --color-btn-primary-disabled-border: transparent;
 
-  --color-action-list-item-default-hover-bg: #ede8dd;
-  --color-segmented-control-bg: #e5ddd0;
+  --color-action-list-item-default-hover-bg: #f4f1ea;
+  --color-segmented-control-bg: #f4f1ea;
   --color-segmented-control-button-bg: #fdfcfb;
-  --color-segmented-control-button-selected-border: #beb7ac;
+  --color-segmented-control-button-selected-border: #e8e6e1;
   --color-fg-default: #1c1c1c;
   --color-fg-muted: #737367;
   --color-fg-subtle: #94948d;
   --color-canvas-default: #fdfcfb;
   --color-canvas-overlay: #fdfcfb;
-  --color-canvas-inset: #ede8dd;
-  --color-canvas-subtle: #ede8dd;
-  --color-border-default: #beb7ac;
-  --color-border-muted: #d4cfc7;
-  --color-neutral-muted: rgba(115, 115, 103, 0.14);
+  --color-canvas-inset: #f4f1ea;
+  --color-canvas-subtle: #f4f1ea;
+  --color-border-default: #e8e6e1;
+  --color-border-muted: #efedea;
+  --color-neutral-muted: rgba(115, 115, 103, 0.1);
   --color-accent-fg: #52524e;
   --color-accent-emphasis: #52524e;
   --color-accent-muted: rgba(82, 82, 78, 0.3);
-  --color-accent-subtle: rgba(82, 82, 78, 0.08);
+  --color-accent-subtle: rgba(82, 82, 78, 0.06);
   --color-success-fg: #2f6f3e;
   --color-attention-fg: #7b5d3a;
   --color-attention-muted: rgba(123, 93, 58, 0.3);
@@ -81,11 +84,11 @@
   --color-danger-muted: rgba(180, 35, 24, 0.3);
   --color-danger-subtle: #f9dedc;
   --color-primer-shadow-inset: none;
-  --color-scale-gray-1: #ede8dd;
-  --color-scale-blue-1: #e5ddd0;
+  --color-scale-gray-1: #f4f1ea;
+  --color-scale-blue-1: #efece5;
 
-  --color-social-reaction-bg-hover: #ede8dd;
-  --color-social-reaction-bg-reacted-hover: #e5ddd0;
+  --color-social-reaction-bg-hover: #f4f1ea;
+  --color-social-reaction-bg-reacted-hover: #efece5;
 }
 
 .gsc-main {
@@ -98,9 +101,11 @@
     sans-serif;
 }
 
+/* 페이지 배경과 동일한 색을 명시 — transparent로 두면
+   iframe 캔버스가 흰색으로 비쳐 띠가 생긴다 */
 body,
 .gsc-main {
-  background: transparent;
+  background: #fdfcfb;
   color: #1c1c1c;
 }
 
@@ -115,17 +120,17 @@ body,
 }
 
 /* 댓글 입력 박스
-   계층: 페이지(fdfcfb) < 박스(e8e1d4) < 탭/하단(ddd5c6) < textarea(fdfcfb 흰 입력칸) */
+   계층: 페이지(fdfcfb) = 박스 본문 < 탭/하단(f4f1ea) / textarea는 흰색 입력칸 */
 .gsc-comment-box {
-  background: #e8e1d4;
-  border: 1px solid #aea79f;
+  background: #fdfcfb;
+  border: 1px solid #e8e6e1;
   border-radius: 12px;
   overflow: hidden;
 }
 
 .gsc-comment-box-tabs {
-  background: #ddd5c6;
-  border-bottom: 1px solid #aea79f;
+  background: #f4f1ea;
+  border-bottom: 1px solid #e8e6e1;
 }
 
 .gsc-comment-box-tab {
@@ -133,24 +138,24 @@ body,
 }
 
 .gsc-comment-box-tab[aria-selected="true"] {
-  background: #e8e1d4;
+  background: #fdfcfb;
   color: #1c1c1c;
-  border-color: #aea79f;
+  border-color: #e8e6e1;
 }
 
 .gsc-comment-box-main {
-  background: #e8e1d4;
+  background: #fdfcfb;
 }
 
 .gsc-comment-box-textarea-extras {
-  background: #e8e1d4;
-  border-top: 1px solid #aea79f;
+  background: #fdfcfb;
+  border-top: 1px solid #e8e6e1;
 }
 
 /* textarea는 가장 밝게 — 입력 필드임을 명확히 */
 .gsc-comment-box-textarea {
-  background: #fdfcfb;
-  border: 1px solid #aea79f;
+  background: #ffffff;
+  border: 1px solid #e8e6e1;
   border-radius: 6px;
   color: #1c1c1c;
 }
@@ -165,8 +170,8 @@ body,
 }
 
 .gsc-comment-box-bottom {
-  background: #ddd5c6;
-  border-top: 1px solid #aea79f;
+  background: #f4f1ea;
+  border-top: 1px solid #e8e6e1;
 }
 
 .gsc-comment-box-md-toolbar button {
@@ -177,10 +182,10 @@ body,
   color: #1c1c1c;
 }
 
-/* 개별 댓글 — 흰 카드 */
+/* 개별 댓글 카드 */
 .gsc-comment {
   background: #fdfcfb;
-  border: 1px solid #ccc7be;
+  border: 1px solid #e8e6e1;
   border-radius: 12px;
 }
 
@@ -189,7 +194,7 @@ body,
 }
 
 .gsc-comment-author-avatar {
-  border-color: #ccc7be;
+  border-color: #e8e6e1;
 }
 
 .gsc-comment-content {
@@ -202,17 +207,17 @@ body,
 
 .gsc-comment-reactions button {
   color: #737367;
-  border-color: #ccc7be;
+  border-color: #e8e6e1;
   background: transparent;
 }
 
 .gsc-comment-reactions button:hover {
-  background: #e8e1d4;
+  background: #f4f1ea;
 }
 
 .gsc-social-reaction-summary-item {
   color: #737367;
-  border-color: #ccc7be;
+  border-color: #e8e6e1;
 }
 
 .gsc-login {

@@ -23,7 +23,7 @@ export default function TagsPage() {
   const tags = getAllTags();
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
       <div className="mb-16">
         <h1 className="text-3xl font-bold text-warm-text mb-4 tracking-tight">
           태그
