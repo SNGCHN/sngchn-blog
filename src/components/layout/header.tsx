@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type SVGProps, useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
 import { SearchDialog, type SearchPost } from "@/components/search-dialog";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { cn } from "@/lib/utils";
 
 const navLinks = [
   { label: "홈", href: "/" },
@@ -72,7 +72,7 @@ export function Header({ searchPosts }: HeaderProps) {
         "sticky top-0 z-50 w-full",
         "border-b border-warm-border",
         "bg-warm-bg/80",
-        "backdrop-blur-md transition-colors duration-300"
+        "backdrop-blur-md transition-colors duration-300",
       )}
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -94,7 +94,7 @@ export function Header({ searchPosts }: HeaderProps) {
                 "text-[15px] transition-colors duration-300",
                 pathname === link.href
                   ? "font-semibold text-warm-text"
-                  : "text-warm-muted hover:text-warm-text"
+                  : "text-warm-muted hover:text-warm-text",
               )}
             >
               {link.label}
@@ -111,7 +111,7 @@ export function Header({ searchPosts }: HeaderProps) {
               "group inline-flex items-center gap-2 rounded-lg",
               "border border-warm-border bg-warm-bg/50 px-3 py-1.5",
               "text-warm-muted transition-colors duration-300",
-              "hover:border-warm-primary/50 hover:text-warm-text"
+              "hover:border-warm-primary/50 hover:text-warm-text",
             )}
             aria-label="Open search"
           >
@@ -129,7 +129,7 @@ export function Header({ searchPosts }: HeaderProps) {
               "group inline-flex items-center gap-1.5",
               "text-[15px] font-medium",
               "text-warm-primary hover:text-warm-text",
-              "transition-colors duration-300"
+              "transition-colors duration-300",
             )}
           >
             포트폴리오
@@ -216,9 +216,7 @@ export function Header({ searchPosts }: HeaderProps) {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={cn(
                   "block w-full text-left text-lg font-medium tracking-tight",
-                  pathname === link.href
-                    ? "text-warm-text"
-                    : "text-warm-muted"
+                  pathname === link.href ? "text-warm-text" : "text-warm-muted",
                 )}
               >
                 {link.label}

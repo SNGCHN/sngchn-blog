@@ -1,8 +1,8 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { posts } from "#site/content";
 import { formatDate } from "@/lib/utils";
-import type { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ tag: string }>;
@@ -62,9 +62,7 @@ export default async function TagPage({ params }: PageProps) {
         <h1 className="text-3xl font-bold text-warm-text tracking-tight">
           #{decodedTag}
         </h1>
-        <p className="text-warm-muted mt-2">
-          {filteredPosts.length}개의 글
-        </p>
+        <p className="text-warm-muted mt-2">{filteredPosts.length}개의 글</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

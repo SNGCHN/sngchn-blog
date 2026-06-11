@@ -1,16 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLikeContext } from "@/components/like-provider";
 import { cn } from "@/lib/utils";
-import { useLike } from "@/hooks/use-like";
 
-interface FloatingMenuProps {
-  slug: string;
-  initialLikes: number;
-}
-
-export function FloatingMenu({ slug, initialLikes }: FloatingMenuProps) {
-  const { likes, isLiked, handleLike } = useLike(slug, initialLikes);
+export function FloatingMenu() {
+  const { likes, liked, status, toggle } = useLikeContext();
   const [showTopButton, setShowTopButton] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -81,7 +76,14 @@ export function FloatingMenu({ slug, initialLikes }: FloatingMenuProps) {
   };
 
   const buttonClass =
-    "flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-full transition-transform duration-200 active:scale-95 bg-warm-text text-warm-bg hover:opacity-90";
+    "flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-full transition-transform duration-200 active:scale-95 bg-warm-text text-warm-bg hover:opacity-90 disabled:hover:opacity-100";
+
+  const likeTooltip =
+    status === "rate-limited"
+      ? "잠시 후 다시 시도해 주세요"
+      : status === "error"
+        ? "다시 시도해 주세요"
+        : `좋아요 ${likes}`;
 
   const showActions = isDesktop || isVisible;
 
@@ -91,22 +93,26 @@ export function FloatingMenu({ slug, initialLikes }: FloatingMenuProps) {
     showActions
       ? "max-w-10 opacity-100 scale-100"
       : "max-w-0 opacity-0 scale-95 pointer-events-none",
-    "lg:max-w-none lg:opacity-100 lg:scale-100"
+    "lg:max-w-none lg:opacity-100 lg:scale-100",
   );
 
   const topDesktopWrapperClass = cn(
     "hidden lg:block transition-[max-height,opacity] duration-300 overflow-hidden origin-center",
-    showTopButton ? "max-h-12 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+    showTopButton
+      ? "max-h-12 opacity-100"
+      : "max-h-0 opacity-0 pointer-events-none",
   );
 
   const topDesktopInnerClass = cn(
     "transition-transform duration-300",
-    showTopButton ? "translate-y-0" : "translate-y-2"
+    showTopButton ? "translate-y-0" : "translate-y-2",
   );
 
   const topMobileWrapperClass = cn(
     "fixed bottom-6 right-6 z-40 lg:hidden transition-[opacity,transform] duration-300",
-    showTopButton ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"
+    showTopButton
+      ? "opacity-100 translate-y-0"
+      : "opacity-0 translate-y-2 pointer-events-none",
   );
 
   return (
@@ -116,25 +122,30 @@ export function FloatingMenu({ slug, initialLikes }: FloatingMenuProps) {
           "fixed z-40 transition-all duration-300 ease-in-out",
           "bottom-6 left-1/2 -translate-x-1/2 flex flex-row items-center",
           showActions ? "gap-3" : "gap-0",
-          "lg:bottom-12 lg:left-auto lg:right-12 lg:translate-x-0 lg:flex-col lg:items-end lg:gap-4"
+          "lg:bottom-12 lg:left-auto lg:right-12 lg:translate-x-0 lg:flex-col lg:items-end lg:gap-4",
         )}
       >
         <div className={actionWrapperClass}>
           <span className="hidden lg:block absolute right-full mr-3 px-2 py-1 bg-warm-text/80 text-warm-bg text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none backdrop-blur-sm">
-            좋아요 {likes}
+            {likeTooltip}
           </span>
           <button
             type="button"
-            onClick={handleLike}
-            className={cn(buttonClass, isLiked && "text-red-500")}
-            aria-label="좋아요"
+            onClick={toggle}
+            aria-pressed={liked}
+            className={cn(
+              buttonClass,
+              liked && "text-red-500",
+              status === "rate-limited" && "opacity-60",
+            )}
+            aria-label={liked ? "좋아요 취소" : "좋아요"}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="18"
               height="18"
               viewBox="0 0 24 24"
-              fill={isLiked ? "currentColor" : "none"}
+              fill={liked ? "currentColor" : "none"}
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
@@ -177,7 +188,7 @@ export function FloatingMenu({ slug, initialLikes }: FloatingMenuProps) {
           <div
             className={cn(
               "relative group flex items-center justify-center lg:justify-end",
-              topDesktopInnerClass
+              topDesktopInnerClass,
             )}
           >
             <span className="hidden lg:block absolute right-full mr-3 px-2 py-1 bg-warm-text/80 text-warm-bg text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-sm backdrop-blur-sm">

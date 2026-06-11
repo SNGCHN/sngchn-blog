@@ -93,12 +93,8 @@
 
 .gsc-main {
   font-family:
-    "Pretendard Variable",
-    "Pretendard",
-    -apple-system,
-    BlinkMacSystemFont,
-    system-ui,
-    sans-serif;
+    "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont,
+    system-ui, sans-serif;
 }
 
 /* 페이지 배경과 동일한 색을 명시 — transparent로 두면
@@ -170,7 +166,7 @@ body,
 }
 
 .gsc-comment-box-bottom {
-  background: #161615;
+  background: #1d1d1c;
   border-top: 1px solid #2b2b2a;
 }
 

@@ -34,8 +34,7 @@ export default function Home() {
           배움을 정리하는 공간
         </h1>
         <p className="text-xl md:text-2xl text-warm-muted max-w-xl leading-relaxed font-medium tracking-tight">
-          배운 것을 정리하고,{" "}
-          <br className="md:hidden" />
+          배운 것을 정리하고, <br className="md:hidden" />
           다시 꺼내볼 수 있게 남깁니다.
         </p>
       </section>
