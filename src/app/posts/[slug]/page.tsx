@@ -89,6 +89,7 @@ export default async function PostPage({ params }: PageProps) {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            aria-hidden="true"
           >
             <path d="m12 19-7-7 7-7" />
             <path d="M19 12H5" />
@@ -150,6 +151,7 @@ export default async function PostPage({ params }: PageProps) {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
+                      aria-hidden="true"
                     >
                       <rect x="3" y="4" width="18" height="18" rx="2" />
                       <line x1="16" x2="16" y1="2" y2="6" />
@@ -169,11 +171,12 @@ export default async function PostPage({ params }: PageProps) {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
+                      aria-hidden="true"
                     >
                       <circle cx="12" cy="12" r="10" />
                       <polyline points="12 6 12 12 16 14" />
                     </svg>
-                    {post.metadata.readingTime} min read
+                    약 {post.metadata.readingTime}분
                   </span>
                 </div>
                 <LikeButton />
@@ -201,6 +204,7 @@ export default async function PostPage({ params }: PageProps) {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
+                      aria-hidden="true"
                     >
                       <path d="m12 19-7-7 7-7" />
                       <path d="M19 12H5" />
@@ -232,6 +236,7 @@ export default async function PostPage({ params }: PageProps) {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
+                      aria-hidden="true"
                     >
                       <path d="M5 12h14" />
                       <path d="m12 5 7 7-7 7" />
@@ -246,7 +251,7 @@ export default async function PostPage({ params }: PageProps) {
 
             <div
               id="comments-section"
-              className="mt-20 pt-10 border-t border-warm-border scroll-mt-24"
+              className="mt-20 pt-10 border-t border-warm-border"
             >
               <h3 className="text-xl font-bold text-warm-text mb-8 flex items-center gap-2">
                 <svg
@@ -259,6 +264,7 @@ export default async function PostPage({ params }: PageProps) {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  aria-hidden="true"
                 >
                   <path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z" />
                 </svg>
@@ -271,9 +277,6 @@ export default async function PostPage({ params }: PageProps) {
           {tocItems.length > 0 ? (
             <aside className="hidden lg:block">
               <div className="sticky top-32">
-                <h4 className="text-xs font-bold text-warm-text uppercase tracking-wider mb-6 opacity-40">
-                  On this page
-                </h4>
                 <TableOfContents items={tocItems} />
               </div>
             </aside>

@@ -46,14 +46,25 @@ export default defineConfig({
             .optional(),
           code: s.mdx(),
           toc: s.toc(),
+          raw: s.raw(),
           metadata: s.metadata(),
         })
         .transform((data) => {
           const slug = data.slug.split("/").pop() ?? data.slug;
+
+          const cjkRegex = /[가-힣ᄀ-ᇿ㄰-㆏一-鿿぀-ヿ]/g;
+          const cjkChars = (data.raw.match(cjkRegex) ?? []).length;
+          const latinWords = (data.raw.match(/[a-zA-Z]+(?:'[a-zA-Z]+)*/g) ?? [])
+            .length;
+          const wordCount = Math.round(latinWords + cjkChars * 0.56);
+          const readingTime = Math.max(1, Math.round(wordCount / 265));
+
+          const { raw: _raw, ...rest } = data;
           return {
-            ...data,
+            ...rest,
             slug,
             url: `/posts/${slug}`,
+            metadata: { readingTime, wordCount },
           };
         }),
     },

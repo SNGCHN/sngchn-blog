@@ -2,8 +2,13 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import * as runtime from "react/jsx-runtime";
+import { Counter } from "@/components/mdx/counter";
 
-const useMDXComponent = (code: string) => {
+const mdxComponents = {
+  Counter,
+};
+
+const getMDXComponent = (code: string) => {
   const fn = new Function(code);
   return fn({ ...runtime }).default;
 };
@@ -14,7 +19,7 @@ interface MDXContentProps {
 }
 
 export function MDXContent({ code, className }: MDXContentProps) {
-  const Component = useMemo(() => useMDXComponent(code), [code]);
+  const Component = useMemo(() => getMDXComponent(code), [code]);
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,14 +32,12 @@ export function MDXContent({ code, className }: MDXContentProps) {
       if (element.dataset.copyInstalled === "true") return;
       element.dataset.copyInstalled = "true";
 
-      // 버튼/라벨을 figure에 붙여 코드 가로 스크롤에도 위치가 고정되게 한다
       const figure = element.closest<HTMLElement>(
         "figure[data-rehype-pretty-code-figure]",
       );
       const container = figure ?? element;
       if (!figure) element.style.position = "relative";
 
-      // 언어 라벨 — plaintext/text는 표시하지 않는다
       const lang = element.dataset.language;
       if (figure && lang && lang !== "text" && lang !== "plaintext") {
         figure.dataset.lang = lang;
@@ -46,7 +49,6 @@ export function MDXContent({ code, className }: MDXContentProps) {
       button.className = "code-copy-button";
       button.setAttribute("aria-label", "코드 복사");
 
-      // 초기 상태: 복사 아이콘
       button.innerHTML = `
         <svg class="icon icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
@@ -109,7 +111,7 @@ export function MDXContent({ code, className }: MDXContentProps) {
 
   return (
     <div ref={rootRef} className={className}>
-      <Component />
+      <Component components={mdxComponents} />
     </div>
   );
 }

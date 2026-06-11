@@ -75,7 +75,7 @@ export default async function TagPage({ params }: PageProps) {
             <div className="flex flex-wrap gap-3 mb-6 text-xs font-bold tracking-wider text-warm-muted/60 uppercase">
               <span>{formatDate(post.date)}</span>
               <span>•</span>
-              <span>{post.metadata.readingTime} min read</span>
+              <span>약 {post.metadata.readingTime}분</span>
             </div>
 
             <h3 className="text-2xl font-bold text-warm-text mb-4 group-hover:text-warm-primary transition-colors duration-300 tracking-tight leading-snug">
@@ -83,7 +83,7 @@ export default async function TagPage({ params }: PageProps) {
             </h3>
 
             {post.description && (
-              <p className="text-warm-muted mb-8 flex-grow line-clamp-3 leading-relaxed break-keep">
+              <p className="text-warm-muted mb-8 grow line-clamp-3 leading-relaxed break-keep">
                 {post.description}
               </p>
             )}

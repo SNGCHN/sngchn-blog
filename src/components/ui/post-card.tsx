@@ -27,7 +27,7 @@ export function PostCard({
       <article className="flex flex-col h-full p-8 rounded-2xl border border-warm-border hover:border-warm-primary/30 hover:shadow-lg hover:shadow-warm-muted/5 bg-warm-bg/50 transition-colors">
         <div className="flex flex-wrap gap-3 mb-6 text-xs font-mono text-warm-muted/60">
           <span>{formatDate(date)}</span>
-          {readingTime && <span>• {readingTime} min</span>}
+          {readingTime && <span>• 약 {readingTime}분</span>}
         </div>
 
         <h3 className="text-2xl font-bold text-warm-text mb-4 group-hover:text-warm-primary transition-colors duration-300 tracking-tight leading-snug">
@@ -35,7 +35,7 @@ export function PostCard({
         </h3>
 
         {description && (
-          <p className="text-warm-muted mb-8 flex-grow leading-relaxed break-keep">
+          <p className="text-warm-muted mb-8 grow leading-relaxed break-keep">
             {description}
           </p>
         )}
