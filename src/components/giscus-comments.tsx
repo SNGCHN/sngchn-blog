@@ -97,7 +97,7 @@ export function GiscusComments() {
   }, []);
 
   return (
-    <div className="overflow-hidden rounded-lg">
+    <div>
       <div ref={containerRef} />
       {!isConfigured ? (
         <div className="min-h-[180px] flex flex-col items-center justify-center text-center">
