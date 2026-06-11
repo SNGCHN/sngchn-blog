@@ -124,7 +124,7 @@ body,
 .gsc-comment-box {
   background: #fdfcfb;
   border: 1px solid #e8e6e1;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
 }
 
@@ -186,7 +186,7 @@ body,
 .gsc-comment {
   background: #fdfcfb;
   border: 1px solid #e8e6e1;
-  border-radius: 12px;
+  border-radius: 8px;
 }
 
 .gsc-comment-author {
