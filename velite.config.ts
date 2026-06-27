@@ -27,6 +27,22 @@ function rehypeImageAttrs() {
   };
 }
 
+// 본문 검색용 평문 추출: 코드/마크다운 기호를 걷어내고 단어만 남긴다.
+function toSearchText(raw: string) {
+  return raw
+    .replace(/^---[\s\S]*?---/, " ") // frontmatter
+    .replace(/```[\s\S]*?```/g, " ") // 코드 블록
+    .replace(/`[^`]*`/g, " ") // 인라인 코드
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, " ") // MDX 주석
+    .replace(/<!--[\s\S]*?-->/g, " ") // HTML 주석
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ") // 이미지
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // 링크 → 텍스트만
+    .replace(/<\/?[A-Za-z][A-Za-z0-9:-]*(?:\s+[^<>]*?)?\/?>/g, " ") // HTML/MDX 태그
+    .replace(/[#>*_~`|-]/g, " ") // 마크다운 기호
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export default defineConfig({
   root: "content",
   output: {
@@ -84,11 +100,14 @@ export default defineConfig({
           const wordCount = Math.round(latinWords + cjkChars * 0.56);
           const readingTime = Math.max(1, Math.round(wordCount / 265));
 
+          const searchText = toSearchText(data.raw);
+
           const { raw: _raw, ...rest } = data;
           return {
             ...rest,
             slug,
             url: `/posts/${slug}`,
+            searchText,
             metadata: { readingTime, wordCount },
           };
         }),

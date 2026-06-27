@@ -6,7 +6,6 @@ import { type SVGProps, useEffect, useRef, useState } from "react";
 import { SearchDialog } from "@/components/search/dialog";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
-import type { SearchPost } from "@/types/post";
 
 const navLinks = [
   { label: "홈", href: "/" },
@@ -14,10 +13,6 @@ const navLinks = [
   { label: "태그", href: "/tags" },
   { label: "소개", href: "/about" },
 ];
-
-interface HeaderProps {
-  searchPosts: SearchPost[];
-}
 
 function SearchIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -50,7 +45,7 @@ function SearchIcon(props: SVGProps<SVGSVGElement>) {
  * - 테마 토글
  * - Portfolio 외부 링크
  */
-export function Header({ searchPosts }: HeaderProps) {
+export function Header() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -478,7 +473,6 @@ export function Header({ searchPosts }: HeaderProps) {
       <SearchDialog
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        posts={searchPosts}
       />
     </header>
   );

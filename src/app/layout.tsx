@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
-import { posts } from "#site/content";
 
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
-import type { SearchPost } from "@/types/post";
 
 import "./globals.css";
 import "@/styles/prose.css";
@@ -23,15 +21,6 @@ export const metadata: Metadata = {
   },
   description: "배운 것과 트러블슈팅을 기록합니다",
 };
-
-const searchPosts: SearchPost[] = posts.map((post) => ({
-  title: post.title,
-  description: post.description ?? "",
-  date: post.date,
-  tags: post.tags,
-  slug: post.slug,
-  series: post.series,
-}));
 
 const themeScript = `
 (() => {
@@ -57,7 +46,7 @@ export default function RootLayout({
       </head>
       <body className={geistMono.variable}>
         <div className="min-h-screen flex flex-col">
-          <Header searchPosts={searchPosts} />
+          <Header />
           <main className="flex-1">{children}</main>
           <Footer />
         </div>

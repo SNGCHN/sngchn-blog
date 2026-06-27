@@ -12,7 +12,7 @@ export type SeriesPost = {
   series?: SeriesInfo;
 };
 
-// 검색 모달에 사용하는 글 정보
+// 검색 모달에 사용하는 글 정보 (searchText는 본문 평문, 매칭 전용)
 export type SearchPost = {
   title: string;
   description: string;
@@ -20,4 +20,5 @@ export type SearchPost = {
   tags: string[];
   slug: string;
   series?: SeriesInfo;
+  searchText: string;
 };

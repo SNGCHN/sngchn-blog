@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import type { SearchPost } from "@/types/post";
@@ -10,7 +10,6 @@ import type { SearchPost } from "@/types/post";
 interface SearchDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  posts: SearchPost[];
 }
 
 function escapeRegExp(value: string) {
@@ -37,6 +36,18 @@ function highlightText(text: string, query: string) {
   );
 }
 
+// 본문에서 매칭 지점 주변을 잘라 스니펫을 만든다. 매칭 없으면 null.
+function buildSnippet(text: string, query: string, radius = 70) {
+  const index = text.toLowerCase().indexOf(query.toLowerCase());
+  if (index === -1) return null;
+
+  const start = Math.max(0, index - radius);
+  const end = Math.min(text.length, index + query.length + radius);
+  const prefix = start > 0 ? "… " : "";
+  const suffix = end < text.length ? " …" : "";
+  return prefix + text.slice(start, end).trim() + suffix;
+}
+
 function formatSearchDate(date: string) {
   return new Intl.DateTimeFormat("en", {
     year: "numeric",
@@ -45,31 +56,62 @@ function formatSearchDate(date: string) {
   }).format(new Date(date));
 }
 
-export function SearchDialog({ isOpen, onClose, posts }: SearchDialogProps) {
+export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
+  // 검색 인덱스(본문 포함)는 모달이 처음 열릴 때만 가져온다. null = 아직 미로드.
+  const [posts, setPosts] = useState<SearchPost[] | null>(null);
+  const [loadError, setLoadError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   const trimmedQuery = query.trim();
-  const searchResults = useMemo(() => {
-    if (!trimmedQuery) return [];
+  // React Compiler가 메모이즈하므로 useMemo 불필요. 키보드 effect는 이 값을
+  // dependency로 들지 않고 아래 ref로 최신값을 읽는다(리스너 재등록 방지).
+  const lowerQuery = trimmedQuery.toLowerCase();
+  const searchResults =
+    trimmedQuery && posts
+      ? posts.filter(
+          (post) =>
+            post.title.toLowerCase().includes(lowerQuery) ||
+            post.description.toLowerCase().includes(lowerQuery) ||
+            post.tags.some((tag) => tag.toLowerCase().includes(lowerQuery)) ||
+            post.searchText.toLowerCase().includes(lowerQuery),
+        )
+      : [];
 
-    const lowerQuery = trimmedQuery.toLowerCase();
-    return posts.filter((post) => {
-      return (
-        post.title.toLowerCase().includes(lowerQuery) ||
-        post.description.toLowerCase().includes(lowerQuery) ||
-        post.tags.some((tag) => tag.toLowerCase().includes(lowerQuery))
-      );
-    });
-  }, [posts, trimmedQuery]);
+  // 키보드 핸들러가 읽는 최신 상태(매 렌더 갱신). effect는 isOpen에만 의존.
+  const keyStateRef = useRef({ searchResults, selectedIndex, onClose, router });
+  keyStateRef.current = { searchResults, selectedIndex, onClose, router };
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // 모달이 처음 열릴 때 정적 검색 인덱스를 lazy load (한 번만).
+  useEffect(() => {
+    if (!isOpen || posts) return;
+
+    let cancelled = false;
+    setLoadError(false);
+    fetch("/search-index.json")
+      .then((res) => {
+        if (!res.ok) throw new Error(`search index ${res.status}`);
+        return res.json();
+      })
+      .then((data: SearchPost[]) => {
+        if (!cancelled) setPosts(data);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadError(true);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, posts]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -96,6 +138,9 @@ export function SearchDialog({ isOpen, onClose, posts }: SearchDialogProps) {
     if (!isOpen) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      const { searchResults, selectedIndex, onClose, router } =
+        keyStateRef.current;
+
       if (event.key === "Escape") {
         event.preventDefault();
         onClose();
@@ -128,7 +173,7 @@ export function SearchDialog({ isOpen, onClose, posts }: SearchDialogProps) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose, router, searchResults, selectedIndex]);
+  }, [isOpen]);
 
   useEffect(() => {
     if (selectedIndex >= searchResults.length) {
@@ -185,7 +230,7 @@ export function SearchDialog({ isOpen, onClose, posts }: SearchDialogProps) {
               setQuery(event.target.value);
               setSelectedIndex(0);
             }}
-            placeholder="Search posts by title, summary, or tag"
+            placeholder="Search posts by title, content, or tag"
             className="min-w-0 flex-1 bg-transparent text-base text-warm-text outline-none placeholder:text-warm-muted sm:text-lg"
           />
           {query ? (
@@ -241,6 +286,16 @@ export function SearchDialog({ isOpen, onClose, posts }: SearchDialogProps) {
             <div className="px-6 py-12 text-center">
               <p className="text-warm-muted">Type to search posts.</p>
             </div>
+          ) : loadError ? (
+            <div className="px-6 py-12 text-center">
+              <p className="text-warm-muted">
+                Couldn't load search. Close and try again.
+              </p>
+            </div>
+          ) : !posts ? (
+            <div className="px-6 py-12 text-center">
+              <p className="text-warm-muted">Searching…</p>
+            </div>
           ) : searchResults.length === 0 ? (
             <div className="px-6 py-12 text-center">
               <p className="text-warm-muted">
@@ -252,54 +307,68 @@ export function SearchDialog({ isOpen, onClose, posts }: SearchDialogProps) {
               </p>
             </div>
           ) : (
-            searchResults.map((post, index) => (
-              <Link
-                key={post.slug}
-                href={`/posts/${post.slug}`}
-                onClick={onClose}
-                onMouseEnter={() => setSelectedIndex(index)}
-                className={cn(
-                  "block border-l-2 px-4 py-3 transition-colors hover:bg-warm-muted/5",
-                  selectedIndex === index
-                    ? "border-warm-primary bg-warm-muted/5"
-                    : "border-transparent",
-                )}
-              >
-                {post.series ? (
-                  <div className="mb-2 flex items-center gap-2 text-xs">
-                    <span className="font-medium text-warm-primary">
-                      {post.series.name}
-                    </span>
-                    <span className="text-warm-muted/60">
-                      Part {post.series.order}
-                    </span>
-                  </div>
-                ) : null}
-                <h3 className="mb-1 text-lg font-bold text-warm-text">
-                  {highlightText(post.title, trimmedQuery)}
-                </h3>
-                {post.description ? (
-                  <p className="mb-3 line-clamp-2 text-sm leading-relaxed text-warm-muted">
-                    {highlightText(post.description, trimmedQuery)}
-                  </p>
-                ) : null}
-                <div className="flex flex-wrap items-center gap-3 text-xs text-warm-muted/60">
-                  <span>{formatSearchDate(post.date)}</span>
-                  {post.tags.length > 0 ? (
-                    <>
-                      <span className="h-1 w-1 rounded-full bg-warm-border" />
-                      <div className="flex flex-wrap gap-2">
-                        {post.tags.map((tag) => (
-                          <span key={tag}>
-                            #{highlightText(tag, trimmedQuery)}
-                          </span>
-                        ))}
-                      </div>
-                    </>
+            searchResults.map((post, index) => {
+              // 제목·요약에 없고 본문에서만 걸린 경우, 왜 떴는지 보이게 스니펫 표시
+              const inTitleOrDesc =
+                post.title.toLowerCase().includes(lowerQuery) ||
+                post.description.toLowerCase().includes(lowerQuery);
+              const snippet = inTitleOrDesc
+                ? null
+                : buildSnippet(post.searchText, trimmedQuery);
+
+              return (
+                <Link
+                  key={post.slug}
+                  href={`/posts/${post.slug}`}
+                  onClick={onClose}
+                  onMouseEnter={() => setSelectedIndex(index)}
+                  className={cn(
+                    "block border-l-2 px-4 py-3 transition-colors hover:bg-warm-muted/5",
+                    selectedIndex === index
+                      ? "border-warm-primary bg-warm-muted/5"
+                      : "border-transparent",
+                  )}
+                >
+                  {post.series ? (
+                    <div className="mb-2 flex items-center gap-2 text-xs">
+                      <span className="font-medium text-warm-primary">
+                        {post.series.name}
+                      </span>
+                      <span className="text-warm-muted/60">
+                        Part {post.series.order}
+                      </span>
+                    </div>
                   ) : null}
-                </div>
-              </Link>
-            ))
+                  <h3 className="mb-1 text-lg font-bold text-warm-text">
+                    {highlightText(post.title, trimmedQuery)}
+                  </h3>
+                  {snippet ? (
+                    <p className="mb-3 line-clamp-2 text-sm leading-relaxed text-warm-muted">
+                      {highlightText(snippet, trimmedQuery)}
+                    </p>
+                  ) : post.description ? (
+                    <p className="mb-3 line-clamp-2 text-sm leading-relaxed text-warm-muted">
+                      {highlightText(post.description, trimmedQuery)}
+                    </p>
+                  ) : null}
+                  <div className="flex flex-wrap items-center gap-3 text-xs text-warm-muted/60">
+                    <span>{formatSearchDate(post.date)}</span>
+                    {post.tags.length > 0 ? (
+                      <>
+                        <span className="h-1 w-1 rounded-full bg-warm-border" />
+                        <div className="flex flex-wrap gap-2">
+                          {post.tags.map((tag) => (
+                            <span key={tag}>
+                              #{highlightText(tag, trimmedQuery)}
+                            </span>
+                          ))}
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
+                </Link>
+              );
+            })
           )}
         </div>
 
