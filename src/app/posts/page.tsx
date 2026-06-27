@@ -2,8 +2,6 @@ import Link from "next/link";
 import { PostCard } from "@/components/post/post-card";
 import { getAllTags, getSortedPosts } from "@/lib/posts";
 
-export const dynamic = "force-dynamic";
-
 interface PageProps {
   searchParams: Promise<{ tag?: string | string[] }>;
 }
