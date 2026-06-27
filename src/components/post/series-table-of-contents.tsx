@@ -3,19 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { cn, formatDate } from "@/lib/utils";
-
-export type SeriesInfo = {
-  name: string;
-  slug: string;
-  order: number;
-};
-
-export type SeriesPost = {
-  title: string;
-  slug: string;
-  date: string;
-  series?: SeriesInfo;
-};
+import type { SeriesInfo, SeriesPost } from "@/types/post";
 
 interface SeriesTableOfContentsProps {
   currentSlug: string;

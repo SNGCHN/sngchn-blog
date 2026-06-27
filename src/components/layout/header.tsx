@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type SVGProps, useEffect, useRef, useState } from "react";
-import { SearchDialog, type SearchPost } from "@/components/search/dialog";
+import { SearchDialog } from "@/components/search/dialog";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
+import type { SearchPost } from "@/types/post";
 
 const navLinks = [
   { label: "홈", href: "/" },

@@ -4,7 +4,7 @@ import { posts } from "#site/content";
 
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
-import type { SearchPost } from "@/components/search/dialog";
+import type { SearchPost } from "@/types/post";
 
 import "./globals.css";
 import "@/styles/prose.css";
