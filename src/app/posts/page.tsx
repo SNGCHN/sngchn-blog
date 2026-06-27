@@ -5,18 +5,11 @@ import { getAllTags, getSortedPosts } from "@/lib/posts";
 export const dynamic = "force-dynamic";
 
 interface PageProps {
-  searchParams?:
-    | {
-        tag?: string | string[];
-      }
-    | Promise<{
-        tag?: string | string[];
-      }>;
+  searchParams: Promise<{ tag?: string | string[] }>;
 }
 
 export default async function PostsPage({ searchParams }: PageProps) {
-  const resolvedSearchParams = await Promise.resolve(searchParams);
-  const tagParam = resolvedSearchParams?.tag;
+  const { tag: tagParam } = await searchParams;
   const tagValue = Array.isArray(tagParam) ? tagParam[0] : tagParam;
   const selectedTag = tagValue ? decodeURIComponent(tagValue) : null;
 

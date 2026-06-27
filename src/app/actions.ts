@@ -18,7 +18,7 @@ function isValidSlug(slug: string): boolean {
   return posts.some((post) => post.slug === slug);
 }
 
-// 개수만 캐시한다(사용자별 상태가 아니므로 안전). 토글 시 revalidateTag로 갱신.
+// 개수만 캐싱
 const getCachedCount = unstable_cache(
   async (slug: string) => {
     const count = await redis.scard(likeKey(slug));
@@ -37,9 +37,8 @@ export type LikeResult =
   | { ok: true; likes: number; liked: boolean }
   | { ok: false; reason: "rate-limited" | "invalid" | "error" };
 
-// 목표 상태(liked)를 멱등하게 설정한다. SADD/SREM은 멱등이라 같은 요청이
-// 여러 번 와도 안전하고, 음수/중복이 구조적으로 불가능하다. 클라이언트가
-// 낙관적 업데이트를 위해 원하는 최종 상태를 그대로 보낼 수 있다.
+// 목표 상태 멱등하게 설정. SADD/SREM은 멱등이라 같은 요청이 여러 번 와도 안전하고, 음수/중복이 구조적으로 불가능
+// 클라이언트가 낙관적 업데이트를 위해 원하는 최종 상태를 그대로 보낼 수 있다.
 export async function setLike(
   slug: string,
   liked: boolean,
@@ -47,7 +46,7 @@ export async function setLike(
   try {
     if (!isValidSlug(slug)) return { ok: false, reason: "invalid" };
 
-    // 익명 식별자(쿠키). 없으면 발급한다. localStorage 삭제로는 우회되지 않는다.
+    // 익명 식별자(쿠키로). 없으면 발급한다. localStorage 삭제로는 우회 불가능
     const cookieStore = await cookies();
     let uid = cookieStore.get(UID_COOKIE)?.value;
     if (!uid) {
@@ -73,7 +72,6 @@ export async function setLike(
     }
 
     // 다른 방문자에게는 getCachedCount의 60초 revalidate로 전파된다.
-    // 작성자 본인은 아래 반환값으로 즉시 갱신.
     const likes = await redis.scard(key);
 
     return { ok: true, likes: likes ?? 0, liked };

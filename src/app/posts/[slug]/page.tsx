@@ -20,7 +20,7 @@ import { getSortedPosts } from "@/lib/posts";
 import { formatDate } from "@/lib/utils";
 
 interface PageProps {
-  params: { slug: string } | Promise<{ slug: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
@@ -30,7 +30,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { slug } = await Promise.resolve(params);
+  const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
   const post = posts.find((p) => p.slug === decodedSlug);
 
@@ -43,7 +43,7 @@ export async function generateMetadata({
 }
 
 export default async function PostPage({ params }: PageProps) {
-  const { slug } = await Promise.resolve(params);
+  const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
   const post = posts.find((p) => p.slug === decodedSlug);
 
