@@ -1,0 +1,5 @@
+# 텍스트 파일은 저장소에 LF로 저장/체크아웃해 라인엔딩 churn과 경고를 없앤다.
+* text=auto eol=lf
+
+# 락파일은 도구가 관리하므로 diff 잡음 줄임
+pnpm-lock.yaml linguist-generated=true
