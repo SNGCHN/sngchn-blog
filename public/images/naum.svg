@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <style>
+    .blob { fill: #7C9885; }
+    @media (prefers-color-scheme: dark) { .blob { fill: #9DB4A4; } }
+  </style>
+  <path class="blob" d="M57 20 C67.2 17.3 78.3 20 86 25 C93.7 30 100.5 40.5 103 50 C105.5 59.5 106 73.2 101 82 C96 90.8 82.7 99.7 73 103 C63.3 106.3 51.7 106.8 43 102 C34.3 97.2 24 84.2 21 74 C18 63.8 19 50 25 41 C31 32 46.8 22.7 57 20 Z"/>
+</svg>
