@@ -1,17 +1,12 @@
 import Link from "next/link";
+import type { Post } from "#site/content";
 import { cn, formatDate } from "@/lib/utils";
 
 interface PostCardProps {
-  post: {
-    slug: string;
-    title: string;
-    description?: string;
-    date: string;
-    tags: string[];
-    metadata: {
-      readingTime: number;
-    };
-  };
+  post: Pick<
+    Post,
+    "slug" | "title" | "description" | "date" | "tags" | "metadata"
+  >;
   descriptionClassName?: string;
 }
 

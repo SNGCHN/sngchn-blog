@@ -1,6 +1,7 @@
 import Link from "next/link";
+import type { Post } from "#site/content";
 
-type PagerPost = { slug: string; title: string };
+type PagerPost = Pick<Post, "slug" | "title">;
 
 export function PostPager({
   prevPost,
