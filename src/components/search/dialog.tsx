@@ -36,13 +36,16 @@ function highlightText(text: string, query: string) {
   );
 }
 
-// 본문에서 매칭 지점 주변을 잘라 스니펫을 만든다. 매칭 없으면 null.
+// 본문에서 매칭 지점 주변을 잘라 스니펫을 만든다. 빈 query/매칭 없으면 null.
 function buildSnippet(text: string, query: string, radius = 70) {
-  const index = text.toLowerCase().indexOf(query.toLowerCase());
+  const trimmed = query.trim();
+  if (!trimmed) return null;
+
+  const index = text.toLowerCase().indexOf(trimmed.toLowerCase());
   if (index === -1) return null;
 
   const start = Math.max(0, index - radius);
-  const end = Math.min(text.length, index + query.length + radius);
+  const end = Math.min(text.length, index + trimmed.length + radius);
   const prefix = start > 0 ? "… " : "";
   const suffix = end < text.length ? " …" : "";
   return prefix + text.slice(start, end).trim() + suffix;
