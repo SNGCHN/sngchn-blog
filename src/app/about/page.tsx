@@ -15,21 +15,14 @@ const socials: { label: string; href: string; icon: React.ReactNode }[] = [
     label: "GitHub",
     href: "https://github.com/sngchn",
     icon: (
-      <>
-        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-        <path d="M9 18c-4.51 2-5-2-7-2" />
-      </>
+      <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577v-2.04c-3.338.724-4.042-1.61-4.042-1.61-.546-1.386-1.333-1.755-1.333-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.435.375.81 1.102.81 2.222v3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
     ),
   },
   {
     label: "LinkedIn",
     href: "https://linkedin.com/in/sngchn",
     icon: (
-      <>
-        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-        <rect width="4" height="12" x="2" y="9" />
-        <circle cx="4" cy="4" r="2" />
-      </>
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.063 2.063 0 1 1 0-4.126 2.063 2.063 0 0 1 0 4.126zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
     ),
   },
 ];
@@ -48,14 +41,12 @@ export default function AboutPage() {
           개발하며 배운 것, 만들며 부딪힌 것을 정리해 두는 공간입니다.
         </p>
         <p className="max-w-2xl text-xl text-warm-muted leading-relaxed break-keep">
-          잘 정리된
-          지식을 옮겨 적기보다는 직접 헤맨 과정을 다음에 다시 꺼내 쓸 수 있게
-          남기려고 합니다.
+          잘 정리된 지식을 옮겨 적기보다는 직접 헤맨 과정을 다음에 다시 꺼내 쓸
+          수 있게 남기려고 합니다.
         </p>
       </section>
 
       <div className="space-y-20">
-
         <section>
           <h2 className="mb-6 font-mono text-xs uppercase tracking-wider text-warm-muted/60">
             Built with
@@ -140,18 +131,14 @@ export default function AboutPage() {
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-warm-border px-4 py-2 text-sm font-medium text-warm-muted transition-colors hover:border-warm-primary/40 hover:text-warm-text"
+                className="inline-flex items-center gap-2 rounded-full bg-warm-muted/10 px-4 py-2 text-sm font-medium text-warm-muted transition-colors hover:bg-warm-primary/10 hover:text-warm-text"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
                   height="16"
                   viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  fill="currentColor"
                   aria-hidden="true"
                 >
                   {social.icon}

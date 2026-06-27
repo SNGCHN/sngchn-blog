@@ -1,28 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { posts } from "#site/content";
-import { formatDate } from "@/lib/utils";
+import { PostCard } from "@/components/post/post-card";
+import { getAllTags, getSortedPosts } from "@/lib/posts";
 
 interface PageProps {
   params: Promise<{ tag: string }>;
 }
 
-/**
- * 모든 고유 태그 목록 반환 (정적 생성용)
- */
 export async function generateStaticParams() {
-  const allTags = new Set<string>();
-
-  for (const post of posts) {
-    for (const tag of post.tags) {
-      allTags.add(tag);
-    }
-  }
-
-  return Array.from(allTags).map((tag) => ({
-    tag: encodeURIComponent(tag),
-  }));
+  return getAllTags().map(({ name }) => ({ tag: encodeURIComponent(name) }));
 }
 
 export async function generateMetadata({
@@ -41,10 +28,9 @@ export default async function TagPage({ params }: PageProps) {
   const { tag } = await params;
   const decodedTag = decodeURIComponent(tag);
 
-  // 해당 태그를 가진 글 필터링
-  const filteredPosts = posts
-    .filter((post) => post.tags.includes(decodedTag))
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const filteredPosts = getSortedPosts().filter((post) =>
+    post.tags.includes(decodedTag),
+  );
 
   if (filteredPosts.length === 0) {
     notFound();
@@ -67,40 +53,11 @@ export default async function TagPage({ params }: PageProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {filteredPosts.map((post) => (
-          <Link
+          <PostCard
             key={post.slug}
-            href={`/posts/${post.slug}`}
-            className="group flex flex-col h-full p-8 rounded-2xl border border-warm-border hover:border-warm-primary/30 hover:shadow-lg hover:shadow-warm-muted/5 bg-warm-bg/50 transition-colors"
-          >
-            <div className="flex flex-wrap gap-3 mb-6 text-xs font-bold tracking-wider text-warm-muted/60 uppercase">
-              <span>{formatDate(post.date)}</span>
-              <span>•</span>
-              <span>약 {post.metadata.readingTime}분</span>
-            </div>
-
-            <h3 className="text-2xl font-bold text-warm-text mb-4 group-hover:text-warm-primary transition-colors duration-300 tracking-tight leading-snug">
-              {post.title}
-            </h3>
-
-            {post.description && (
-              <p className="text-warm-muted mb-8 grow line-clamp-3 leading-relaxed break-keep">
-                {post.description}
-              </p>
-            )}
-
-            {post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-auto pt-6 border-t border-warm-border/50">
-                {post.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs font-medium text-warm-primary bg-warm-muted/10 px-2 py-1 rounded-md"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </Link>
+            post={post}
+            descriptionClassName="line-clamp-3"
+          />
         ))}
       </div>
     </div>

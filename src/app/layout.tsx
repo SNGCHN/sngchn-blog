@@ -4,9 +4,11 @@ import { posts } from "#site/content";
 
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
-import type { SearchPost } from "@/components/search-dialog";
+import type { SearchPost } from "@/components/search/dialog";
 
 import "./globals.css";
+import "@/styles/prose.css";
+import "@/styles/animations.css";
 
 // Geist Mono - 코드 블록용
 const geistMono = Geist_Mono({
@@ -22,18 +24,14 @@ export const metadata: Metadata = {
   description: "배운 것과 트러블슈팅을 기록합니다",
 };
 
-const searchPosts: SearchPost[] = posts.map((post) => {
-  const series = (post as { series?: SearchPost["series"] }).series;
-
-  return {
-    title: post.title,
-    description: post.description ?? "",
-    date: post.date,
-    tags: post.tags,
-    slug: post.slug,
-    series,
-  };
-});
+const searchPosts: SearchPost[] = posts.map((post) => ({
+  title: post.title,
+  description: post.description ?? "",
+  date: post.date,
+  tags: post.tags,
+  slug: post.slug,
+  series: post.series,
+}));
 
 const themeScript = `
 (() => {
@@ -54,6 +52,7 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <head>
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: Static theme bootstrap prevents hydration flash. */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className={geistMono.variable}>

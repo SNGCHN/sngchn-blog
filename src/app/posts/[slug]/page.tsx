@@ -3,18 +3,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { posts } from "#site/content";
 import { getLikes } from "@/app/actions";
-import { GiscusComments } from "@/components/giscus-comments";
-import { LikeProvider } from "@/components/like-provider";
-import { MDXContent } from "@/components/mdx-content";
-import { ReadingProgress } from "@/components/reading-progress";
+import { GiscusComments } from "@/components/comments/giscus-comments";
+import { MDXContent } from "@/components/mdx/content";
+import { FloatingMenu } from "@/components/post/floating-menu";
+import { LikeButton } from "@/components/post/like-button";
+import { LikeProvider } from "@/components/post/like-provider";
 import {
-  type SeriesInfo,
   type SeriesPost,
   SeriesTableOfContents,
-} from "@/components/series-table-of-contents";
-import { TableOfContents, type TocItem } from "@/components/table-of-contents";
-import { FloatingMenu } from "@/components/ui/floating-menu";
-import { LikeButton } from "@/components/ui/like-button";
+} from "@/components/post/series-table-of-contents";
+import {
+  DesktopTableOfContents,
+  MobileTableOfContents,
+} from "@/components/post/table-of-contents";
+import { getSortedPosts } from "@/lib/posts";
 import { formatDate } from "@/lib/utils";
 
 interface PageProps {
@@ -47,66 +49,63 @@ export default async function PostPage({ params }: PageProps) {
 
   if (!post) return notFound();
 
-  const sortedPosts = posts
-    .slice()
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const sortedPosts = getSortedPosts();
   const postIndex = sortedPosts.findIndex((p) => p.slug === decodedSlug);
   const prevPost =
     postIndex < sortedPosts.length - 1 ? sortedPosts[postIndex + 1] : null;
   const nextPost = postIndex > 0 ? sortedPosts[postIndex - 1] : null;
-  const currentSeries = (post as { series?: SeriesInfo }).series;
+  const currentSeries = post.series;
   const seriesPosts: SeriesPost[] = currentSeries
     ? sortedPosts
         .map((seriesPost) => ({
           title: seriesPost.title,
           slug: seriesPost.slug,
           date: seriesPost.date,
-          series: (seriesPost as { series?: SeriesInfo }).series,
+          series: seriesPost.series,
         }))
         .filter((seriesPost) => seriesPost.series?.slug === currentSeries.slug)
     : [];
-  const tocItems = ((post.toc as TocItem[]) ?? []).filter(
-    (item) => item.url && item.title,
-  );
+  const tocItems = (post.toc ?? []).filter((item) => item.url && item.title);
+  const hasToc = tocItems.length > 0;
+  const postShellClass = hasToc
+    ? "grid grid-cols-1 xl:grid-cols-[180px_minmax(0,50rem)_180px] gap-y-12 xl:gap-x-8"
+    : "grid grid-cols-1";
+  const contentColumnClass = hasToc ? "xl:col-start-2" : "";
   const initialLikes = await getLikes(post.slug);
 
   return (
-    <main className="max-w-5xl mx-auto px-4 sm:px-6 py-16 relative">
-      <ReadingProgress />
-
-      <Link
-        href="/posts"
-        className="mb-12 inline-flex items-center gap-2 text-sm font-medium text-warm-muted hover:text-warm-text transition-colors duration-300 group"
-      >
-        <span className="w-6 h-6 rounded-full bg-warm-border/30 flex items-center justify-center group-hover:bg-warm-primary group-hover:text-warm-bg transition-colors">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="m12 19-7-7 7-7" />
-            <path d="M19 12H5" />
-          </svg>
-        </span>
-        목록으로 돌아가기
-      </Link>
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 py-16 relative">
+      <div className={postShellClass}>
+        <Link
+          href="/posts"
+          className={`${contentColumnClass} mb-12 inline-flex w-fit items-center gap-2 text-sm font-medium text-warm-muted hover:text-warm-text transition-colors duration-300 group`}
+        >
+          <span className="w-6 h-6 rounded-full bg-warm-border/30 flex items-center justify-center group-hover:bg-warm-primary group-hover:text-warm-bg transition-colors">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="m12 19-7-7 7-7" />
+              <path d="M19 12H5" />
+            </svg>
+          </span>
+          목록으로 돌아가기
+        </Link>
+      </div>
 
       <LikeProvider slug={post.slug} initialLikes={initialLikes}>
-        <div
-          className={
-            tocItems.length > 0
-              ? "grid grid-cols-1 lg:grid-cols-[1fr_220px] gap-12"
-              : "grid grid-cols-1 gap-16"
-          }
-        >
-          <article className="min-w-0">
+        <div className={postShellClass}>
+          <article
+            className={`${contentColumnClass} min-w-0 mx-auto w-full max-w-[50rem]`}
+          >
             <SeriesTableOfContents
               currentSlug={post.slug}
               currentSeries={currentSeries}
@@ -249,10 +248,11 @@ export default async function PostPage({ params }: PageProps) {
               ) : null}
             </div>
 
-            <div
-              id="comments-section"
-              className="mt-20 pt-10 border-t border-warm-border"
-            >
+            <div className="mt-20 flex flex-col items-center gap-4">
+              <LikeButton />
+            </div>
+
+            <div id="comments-section" className="mt-16 pt-4">
               <h3 className="text-xl font-bold text-warm-text mb-8 flex items-center gap-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -274,15 +274,10 @@ export default async function PostPage({ params }: PageProps) {
             </div>
           </article>
 
-          {tocItems.length > 0 ? (
-            <aside className="hidden lg:block">
-              <div className="sticky top-32">
-                <TableOfContents items={tocItems} />
-              </div>
-            </aside>
-          ) : null}
+          {hasToc ? <DesktopTableOfContents items={tocItems} /> : null}
         </div>
 
+        {hasToc ? <MobileTableOfContents items={tocItems} /> : null}
         <FloatingMenu />
       </LikeProvider>
     </main>

@@ -1,23 +1,5 @@
 import Link from "next/link";
-import { posts } from "#site/content";
-
-/**
- * 모든 태그와 글 개수를 계산
- */
-function getAllTags() {
-  const tagCount: Record<string, number> = {};
-
-  for (const post of posts) {
-    for (const tag of post.tags) {
-      tagCount[tag] = (tagCount[tag] || 0) + 1;
-    }
-  }
-
-  // 글 개수 내림차순 정렬
-  return Object.entries(tagCount)
-    .sort((a, b) => b[1] - a[1])
-    .map(([name, count]) => ({ name, count }));
-}
+import { getAllTags } from "@/lib/posts";
 
 export default function TagsPage() {
   const tags = getAllTags();

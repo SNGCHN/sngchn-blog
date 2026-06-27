@@ -1,26 +1,9 @@
 import Link from "next/link";
-import { posts } from "#site/content";
+import { getAllTags, getSortedPosts } from "@/lib/posts";
 import { formatDate } from "@/lib/utils";
 
-function getAllTags() {
-  const tagCount: Record<string, number> = {};
-
-  for (const post of posts) {
-    for (const tag of post.tags) {
-      tagCount[tag] = (tagCount[tag] || 0) + 1;
-    }
-  }
-
-  return Object.entries(tagCount)
-    .sort((a, b) => b[1] - a[1])
-    .map(([name, count]) => ({ name, count }));
-}
-
 export default function Home() {
-  const recentPosts = posts
-    .slice()
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 3);
+  const recentPosts = getSortedPosts().slice(0, 3);
   const popularTags = getAllTags().slice(0, 6);
 
   return (
@@ -61,6 +44,7 @@ export default function Home() {
               strokeLinecap="round"
               strokeLinejoin="round"
               className="transition-transform group-hover:translate-x-1"
+              aria-hidden="true"
             >
               <path d="M5 12h14" />
               <path d="m12 5 7 7-7 7" />

@@ -1,11 +1,30 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef } from "react";
 import * as runtime from "react/jsx-runtime";
 import { Counter } from "@/components/mdx/counter";
 
+// 외부 링크(http~)는 새 탭으로, 내부 경로(/...)는 next/link로 클라이언트 이동,
+// 앵커(#...)는 같은 페이지라 plain <a>.
+function MdxLink({
+  href = "",
+  ...props
+}: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  if (/^https?:\/\//.test(href)) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" {...props} />
+    );
+  }
+  if (href.startsWith("/")) {
+    return <Link href={href} {...props} />;
+  }
+  return <a href={href} {...props} />;
+}
+
 const mdxComponents = {
   Counter,
+  a: MdxLink,
 };
 
 const getMDXComponent = (code: string) => {
@@ -54,7 +73,6 @@ export function MDXContent({ code, className }: MDXContentProps) {
           <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
           <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
         </svg>
-        <span class="text-copy">복사</span>
       `;
 
       button.addEventListener("click", async () => {
@@ -78,7 +96,6 @@ export function MDXContent({ code, className }: MDXContentProps) {
             <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
-            <span class="text-copy">복사됨</span>
           `;
           button.classList.add("success");
         } catch {
@@ -88,7 +105,6 @@ export function MDXContent({ code, className }: MDXContentProps) {
               <line x1="15" y1="9" x2="9" y2="15"></line>
               <line x1="9" y1="9" x2="15" y2="15"></line>
             </svg>
-            <span class="text-copy">실패</span>
           `;
           button.classList.add("error");
         }
@@ -99,7 +115,6 @@ export function MDXContent({ code, className }: MDXContentProps) {
               <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
               <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
             </svg>
-            <span class="text-copy">복사</span>
           `;
           button.classList.remove("success", "error");
         }, 1500);
@@ -107,7 +122,57 @@ export function MDXContent({ code, className }: MDXContentProps) {
 
       container.appendChild(button);
     });
-  }, [code]);
+  });
+
+  // PC(호버 가능 기기)에서만: 본문 링크에 커서를 따라다니는 주소 툴팁.
+  // 긴 주소는 CSS text-overflow로 ... 처리된다.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    if (!window.matchMedia("(hover: hover)").matches) return;
+
+    const tip = document.createElement("div");
+    tip.className = "link-url-tip";
+    document.body.appendChild(tip);
+    let active: HTMLAnchorElement | null = null;
+
+    const move = (e: MouseEvent) => {
+      if (!active) return;
+      const pad = 14;
+      const x = Math.min(
+        e.clientX + pad,
+        window.innerWidth - tip.offsetWidth - 8,
+      );
+      tip.style.left = `${Math.max(8, x)}px`;
+      tip.style.top = `${e.clientY + 18}px`;
+    };
+    const over = (e: MouseEvent) => {
+      const a = (e.target as HTMLElement).closest("a[href]");
+      if (!a || !root.contains(a) || a.closest("h1,h2,h3,h4,h5,h6")) return;
+      const href = a.getAttribute("href") ?? "";
+      if (!href || href.startsWith("#")) return;
+      active = a as HTMLAnchorElement;
+      tip.textContent = href;
+      tip.style.opacity = "1";
+      move(e);
+    };
+    const out = (e: MouseEvent) => {
+      if (active && !active.contains(e.relatedTarget as Node)) {
+        active = null;
+        tip.style.opacity = "0";
+      }
+    };
+
+    root.addEventListener("mouseover", over);
+    root.addEventListener("mousemove", move);
+    root.addEventListener("mouseout", out);
+    return () => {
+      root.removeEventListener("mouseover", over);
+      root.removeEventListener("mousemove", move);
+      root.removeEventListener("mouseout", out);
+      tip.remove();
+    };
+  }, []);
 
   return (
     <div ref={rootRef} className={className}>
