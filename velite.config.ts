@@ -3,6 +3,24 @@ import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import { defineConfig, s } from "velite";
 
+// 본문 이미지에 lazy 로딩/비동기 디코딩 속성을 빌드 시점에 주입
+function rehypeImageAttrs() {
+  // biome-ignore lint/suspicious/noExplicitAny: hast 노드 최소 타입만 사용
+  return (tree: any) => {
+    // biome-ignore lint/suspicious/noExplicitAny: hast 노드 최소 타입만 사용
+    const walk = (node: any) => {
+      if (node.type === "element" && node.tagName === "img") {
+        node.properties = node.properties ?? {};
+        if (node.properties.loading == null) node.properties.loading = "lazy";
+        if (node.properties.decoding == null)
+          node.properties.decoding = "async";
+      }
+      if (Array.isArray(node.children)) node.children.forEach(walk);
+    };
+    walk(tree);
+  };
+}
+
 export default defineConfig({
   root: "content",
   output: {
@@ -13,6 +31,7 @@ export default defineConfig({
   mdx: {
     rehypePlugins: [
       rehypeSlug,
+      rehypeImageAttrs,
       [rehypeAutolinkHeadings, { behavior: "wrap" }],
       [
         rehypePrettyCode,
