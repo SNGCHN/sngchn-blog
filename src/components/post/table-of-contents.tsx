@@ -17,9 +17,6 @@ interface TableOfContentsProps {
   items: TocItem[];
 }
 
-// 모바일 카드는 사이트 헤더(64px) + 간격(8px) + 접힌 카드 높이만큼 헤딩을 가린다.
-// 전역 --scroll-offset(96)보다 큰 값으로 앵커 점프/활성 판정을 맞춘다.
-// ponytail: 헤더·간격(top-[72px])·카드 높이 바뀌면 이 값만 조정
 const MOBILE_TOC_OFFSET = 128;
 
 function flattenTocItems(items: TocItem[]): FlatTocItem[] {
@@ -380,8 +377,8 @@ export function MobileTableOfContents({ items }: TableOfContentsProps) {
       });
 
       let p = 0;
-      if (idx >= 0) {
-        const start = tops[idx] as number;
+      const start = idx >= 0 ? tops[idx] : null;
+      if (start != null) {
         let end: number | null = null;
         for (let j = idx + 1; j < tops.length; j++) {
           if (tops[j] != null) {
@@ -429,7 +426,8 @@ export function MobileTableOfContents({ items }: TableOfContentsProps) {
     const nav = navRef.current;
     if (!nav) return;
     const onClick = (event: globalThis.MouseEvent) => {
-      const link = (event.target as HTMLElement).closest("a");
+      if (!(event.target instanceof Element)) return;
+      const link = event.target.closest("a");
       if (!link) return;
       event.preventDefault();
       const id = getHeadingId(link.getAttribute("href") ?? "");

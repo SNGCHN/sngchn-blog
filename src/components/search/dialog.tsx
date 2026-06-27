@@ -5,19 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
-
-export type SearchPost = {
-  title: string;
-  description: string;
-  date: string;
-  tags: string[];
-  slug: string;
-  series?: {
-    name: string;
-    slug: string;
-    order: number;
-  };
-};
+import type { SearchPost } from "@/types/post";
 
 interface SearchDialogProps {
   isOpen: boolean;
@@ -149,13 +137,10 @@ export function SearchDialog({ isOpen, onClose, posts }: SearchDialogProps) {
   }, [searchResults.length, selectedIndex]);
 
   useEffect(() => {
-    const selectedElement = resultsRef.current?.children[
-      selectedIndex
-    ] as HTMLElement | null;
-
-    selectedElement?.scrollIntoView({
-      block: "nearest",
-    });
+    const selectedElement = resultsRef.current?.children.item(selectedIndex);
+    if (selectedElement instanceof HTMLElement) {
+      selectedElement.scrollIntoView({ block: "nearest" });
+    }
   }, [selectedIndex]);
 
   if (!isMounted || !isOpen) return null;

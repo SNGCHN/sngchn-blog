@@ -46,8 +46,7 @@ export function MDXContent({ code, className }: MDXContentProps) {
     if (!root) return;
 
     const pres = root.querySelectorAll("pre");
-    pres.forEach((pre) => {
-      const element = pre as HTMLElement;
+    pres.forEach((element) => {
       if (element.dataset.copyInstalled === "true") return;
       element.dataset.copyInstalled = "true";
 
@@ -62,7 +61,7 @@ export function MDXContent({ code, className }: MDXContentProps) {
         figure.dataset.lang = lang;
       }
 
-      const codeEl = pre.querySelector("code");
+      const codeEl = element.querySelector("code");
       const button = document.createElement("button");
       button.type = "button";
       button.className = "code-copy-button";
@@ -147,17 +146,20 @@ export function MDXContent({ code, className }: MDXContentProps) {
       tip.style.top = `${e.clientY + 18}px`;
     };
     const over = (e: MouseEvent) => {
-      const a = (e.target as HTMLElement).closest("a[href]");
-      if (!a || !root.contains(a) || a.closest("h1,h2,h3,h4,h5,h6")) return;
+      if (!(e.target instanceof Element)) return;
+      const a = e.target.closest("a[href]");
+      if (!(a instanceof HTMLAnchorElement)) return;
+      if (!root.contains(a) || a.closest("h1,h2,h3,h4,h5,h6")) return;
       const href = a.getAttribute("href") ?? "";
       if (!href || href.startsWith("#")) return;
-      active = a as HTMLAnchorElement;
+      active = a;
       tip.textContent = href;
       tip.style.opacity = "1";
       move(e);
     };
     const out = (e: MouseEvent) => {
-      if (active && !active.contains(e.relatedTarget as Node)) {
+      const related = e.relatedTarget;
+      if (active && !(related instanceof Node && active.contains(related))) {
         active = null;
         tip.style.opacity = "0";
       }

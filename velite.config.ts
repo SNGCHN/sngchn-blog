@@ -3,19 +3,25 @@ import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import { defineConfig, s } from "velite";
 
+// hast 트리에서 우리가 건드리는 최소 필드만 정의(전체 hast 타입/의존성 없이)
+interface HastNode {
+  type: string;
+  tagName?: string;
+  properties?: Record<string, unknown>;
+  children?: HastNode[];
+}
+
 // 본문 이미지에 lazy 로딩/비동기 디코딩 속성을 빌드 시점에 주입
 function rehypeImageAttrs() {
-  // biome-ignore lint/suspicious/noExplicitAny: hast 노드 최소 타입만 사용
-  return (tree: any) => {
-    // biome-ignore lint/suspicious/noExplicitAny: hast 노드 최소 타입만 사용
-    const walk = (node: any) => {
+  return (tree: HastNode) => {
+    const walk = (node: HastNode) => {
       if (node.type === "element" && node.tagName === "img") {
-        node.properties = node.properties ?? {};
+        node.properties ??= {};
         if (node.properties.loading == null) node.properties.loading = "lazy";
         if (node.properties.decoding == null)
           node.properties.decoding = "async";
       }
-      if (Array.isArray(node.children)) node.children.forEach(walk);
+      node.children?.forEach(walk);
     };
     walk(tree);
   };
