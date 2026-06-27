@@ -20,9 +20,31 @@
   --color-warm-primary: var(--color-primary);
 }
 
+/* 목차 활성 챕터 제목이 바뀔 때 살짝 올라오며 나타남 */
+@keyframes toc-title-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.4em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-toc-title {
+  animation: toc-title-in 0.28s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-toc-title {
+    animation: none;
+  }
+}
+
 @layer base {
-  /* 기본: Light Mode */
-  :root {
+  :root,
+  [data-theme="light"] {
     --bg-primary: #fdfcfb;
     --text-primary: #1c1c1c;
     --text-muted: #737367;
@@ -30,7 +52,6 @@
     --color-primary: #52524e;
     --inline-code-bg: #f4f1ea;
     --inline-code-fg: #1f1f1c;
-    --inline-code-border: #e2dbd0;
     --code-bg: #f7f5f0;
     --code-border: #e6e2d9;
     --code-label: #8a887d;
@@ -44,9 +65,8 @@
     --scroll-offset: 96px;
   }
 
-  /* 다크모드 */
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
       --bg-primary: #121211;
       --text-primary: #edece9;
       --text-muted: #94948d;
@@ -54,7 +74,6 @@
       --color-primary: #d6d3cc;
       --inline-code-bg: #2f2d2a;
       --inline-code-fg: #f7f3ea;
-      --inline-code-border: #3d3a34;
       --code-bg: #1c1c1c;
       --code-border: #2b2b2a;
       --code-label: #8f8f88;
@@ -65,24 +84,6 @@
     }
   }
 
-  [data-theme="light"] {
-    --bg-primary: #fdfcfb;
-    --text-primary: #1c1c1c;
-    --text-muted: #737367;
-    --border-color: #e8e6e1;
-    --color-primary: #52524e;
-    --inline-code-bg: #f4f1ea;
-    --inline-code-fg: #1f1f1c;
-    --inline-code-border: #e2dbd0;
-    --code-bg: #f7f5f0;
-    --code-border: #e6e2d9;
-    --code-label: #8a887d;
-    --code-button-bg: #fdfcfb;
-    --code-button-bg-hover: #f1ede4;
-    --code-button-border: #ddd8cc;
-    --code-button-fg: #52524e;
-  }
-
   [data-theme="dark"] {
     --bg-primary: #121211;
     --text-primary: #edece9;
@@ -91,7 +92,6 @@
     --color-primary: #d6d3cc;
     --inline-code-bg: #2f2d2a;
     --inline-code-fg: #f7f3ea;
-    --inline-code-border: #3d3a34;
     --code-bg: #1c1c1c;
     --code-border: #2b2b2a;
     --code-label: #8f8f88;
@@ -177,341 +177,5 @@
   /* 스크롤바 숨김 (선택사항) */
   ::-webkit-scrollbar {
     display: none;
-  }
-
-  /* Prose 스타일 (MDX 콘텐츠용) */
-  .prose {
-    --tw-prose-body: var(--text-primary);
-    --tw-prose-headings: var(--text-primary);
-    --tw-prose-lead: var(--text-primary);
-    --tw-prose-links: var(--color-primary);
-    --tw-prose-bold: var(--text-primary);
-    --tw-prose-counters: var(--text-muted);
-    --tw-prose-bullets: var(--text-muted);
-    --tw-prose-hr: var(--border-color);
-    --tw-prose-quotes: var(--text-primary);
-    --tw-prose-quote-borders: var(--border-color);
-    --tw-prose-captions: var(--text-muted);
-    --tw-prose-code: var(--inline-code-fg);
-    --tw-prose-pre-code: var(--text-primary);
-    --tw-prose-pre-bg: var(--code-bg);
-    --tw-prose-th-borders: var(--border-color);
-    --tw-prose-td-borders: var(--border-color);
-    max-width: 50rem;
-    font-size: 1.125rem;
-    line-height: 1.85;
-    letter-spacing: normal;
-    word-break: keep-all;
-    overflow-wrap: break-word;
-    color: var(--text-primary);
-  }
-
-  .prose p {
-    margin-bottom: 1.75rem;
-  }
-
-  .prose h1,
-  .prose h2,
-  .prose h3,
-  .prose h4,
-  .prose h5,
-  .prose h6 {
-    color: var(--text-primary);
-  }
-  .prose h1 {
-    font-size: 2.125rem;
-    font-weight: 800;
-    letter-spacing: -0.035em;
-    line-height: 1.25;
-    margin-top: 4.5rem;
-    margin-bottom: 1.5rem;
-    padding-top: 2.5rem;
-    border-top: 1px solid var(--border-color);
-  }
-
-  .prose h2 {
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: -0.025em;
-    line-height: 1.35;
-    margin-top: 3.5rem;
-    margin-bottom: 1.25rem;
-  }
-
-  .prose h3 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.4;
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .prose h4,
-  .prose h5,
-  .prose h6 {
-    font-weight: 700;
-    margin-top: 2rem;
-    margin-bottom: 0.875rem;
-  }
-
-  .prose > :first-child {
-    margin-top: 0;
-  }
-
-  .prose h1:first-child {
-    padding-top: 0;
-    border-top: none;
-  }
-
-  .prose strong {
-    color: var(--text-primary);
-    font-weight: 700;
-  }
-
-  .prose ul {
-    list-style-type: disc;
-    list-style-position: outside;
-    padding-left: 1.375rem;
-    margin-bottom: 1.75rem;
-  }
-
-  .prose ul li {
-    margin-bottom: 0.625rem;
-    padding-left: 0.25rem;
-  }
-
-  .prose ul ::marker {
-    color: var(--text-muted);
-  }
-
-  .prose code {
-    font-family: var(--font-mono);
-    font-size: 0.9em;
-    font-weight: 500;
-    padding: 0.125rem 0.375rem;
-    border-radius: var(--radius-sm);
-  }
-
-  .prose pre {
-    background-color: var(--code-bg);
-    color: var(--text-primary);
-    padding: 2.5rem 1.25rem 1.25rem;
-    border-radius: var(--radius-md);
-    overflow-x: auto;
-    margin-bottom: 2rem;
-    border: 1px solid var(--code-border);
-    transition:
-      background-color 0.3s ease,
-      border-color 0.3s ease;
-  }
-
-  .prose figure[data-rehype-pretty-code-figure] {
-    position: relative;
-    margin: 0 0 2rem;
-  }
-
-  .prose figure[data-rehype-pretty-code-figure] pre {
-    margin-bottom: 0;
-  }
-
-  .prose pre code {
-    background-color: transparent;
-    color: inherit;
-    padding: 0;
-    font-size: 0.875rem;
-    border: 0;
-  }
-
-  .prose code[data-theme],
-  .prose code[data-theme] span {
-    color: var(--shiki-light);
-  }
-
-  [data-theme="dark"] .prose code[data-theme],
-  [data-theme="dark"] .prose code[data-theme] span {
-    color: var(--shiki-dark);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .prose code[data-theme],
-    :root:not([data-theme="light"]) .prose code[data-theme] span {
-      color: var(--shiki-dark);
-    }
-  }
-
-  .prose pre ::selection {
-    background-color: color-mix(in oklab, var(--text-primary) 18%, transparent);
-  }
-
-  .code-copy-button {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.625rem;
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.375rem 0.625rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--code-button-border);
-    background: var(--code-button-bg);
-    color: var(--code-button-fg);
-    font-family: var(--font-sans);
-    font-size: 0.8125rem;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    cursor: pointer;
-    opacity: 0;
-    transition:
-      opacity 0.2s ease,
-      background-color 0.2s ease,
-      border-color 0.2s ease,
-      color 0.2s ease;
-  }
-
-  .code-copy-button .icon {
-    width: 0.875rem;
-    height: 0.875rem;
-    flex-shrink: 0;
-  }
-
-  .code-copy-button .text-copy {
-    display: inline-block;
-  }
-
-  .prose figure[data-rehype-pretty-code-figure]:hover .code-copy-button,
-  .prose figure[data-rehype-pretty-code-figure]:focus-within .code-copy-button,
-  .prose pre:hover .code-copy-button,
-  .prose pre:focus-within .code-copy-button {
-    opacity: 1;
-  }
-
-  .code-copy-button:hover {
-    background: var(--code-button-bg-hover);
-  }
-
-  .code-copy-button.success {
-    color: #059669;
-    border-color: color-mix(in oklab, #059669 45%, transparent);
-  }
-
-  .code-copy-button.error {
-    color: #dc2626;
-    border-color: color-mix(in oklab, #dc2626 45%, transparent);
-  }
-
-  .code-copy-button:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
-  }
-
-  @media (max-width: 1023px) {
-    .code-copy-button {
-      opacity: 1;
-    }
-  }
-
-  .prose a {
-    color: var(--color-primary);
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    transition: color 0.15s ease;
-  }
-
-  .prose a:hover {
-    color: var(--text-primary);
-  }
-
-  .prose img {
-    border-radius: var(--radius-md);
-  }
-
-  .prose blockquote {
-    border-left: 2px solid var(--color-primary);
-    padding-left: 1.5rem;
-    font-style: italic;
-    color: var(--text-muted);
-  }
-}
-
-@layer components {
-  .prose {
-    --tw-prose-body: var(--text-primary);
-    --tw-prose-headings: var(--text-primary);
-    --tw-prose-lead: var(--text-primary);
-    --tw-prose-links: var(--color-primary);
-    --tw-prose-bold: var(--text-primary);
-    --tw-prose-counters: var(--text-muted);
-    --tw-prose-bullets: var(--text-muted);
-    --tw-prose-hr: var(--border-color);
-    --tw-prose-quotes: var(--text-primary);
-    --tw-prose-quote-borders: var(--border-color);
-    --tw-prose-captions: var(--text-muted);
-    --tw-prose-code: var(--inline-code-fg);
-    --tw-prose-pre-code: var(--text-primary);
-    --tw-prose-pre-bg: var(--code-bg);
-    --tw-prose-th-borders: var(--border-color);
-    --tw-prose-td-borders: var(--border-color);
-  }
-
-  .prose :where(h1, h2, h3, h4, h5, h6) a {
-    color: inherit;
-    text-decoration: none !important;
-    background-image: none !important;
-    box-shadow: none !important;
-    border-bottom: none !important;
-    padding-bottom: 0;
-  }
-}
-
-@layer utilities {
-  .prose :where(p, li, h1, h2, h3, h4, h5, h6, strong, em, blockquote) {
-    color: var(--text-primary);
-  }
-
-  /* 인라인 코드 — 은은한 배경만으로 구분하는 미니멀 스타일 */
-  .prose :not(pre) > code {
-    background-color: var(--inline-code-bg);
-    color: var(--inline-code-fg);
-  }
-
-  .prose :not(pre) > code::before,
-  .prose :not(pre) > code::after {
-    content: "";
-  }
-
-  .prose :where(a) {
-    color: var(--color-primary);
-  }
-
-  .prose :where(li)::marker {
-    color: var(--text-muted);
-  }
-
-  .prose pre {
-    background-color: var(--code-bg);
-    color: var(--text-primary);
-    padding: 2.75rem 1.25rem 1.25rem;
-    border: 1px solid var(--code-border);
-    border-radius: var(--radius-md);
-  }
-
-  .prose figure[data-rehype-pretty-code-figure] pre {
-    margin: 0;
-  }
-
-  .prose figure[data-rehype-pretty-code-figure][data-lang]::before {
-    content: attr(data-lang);
-    position: absolute;
-    top: 0.875rem;
-    left: 1.25rem;
-    z-index: 1;
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--code-label);
-    pointer-events: none;
   }
 }
