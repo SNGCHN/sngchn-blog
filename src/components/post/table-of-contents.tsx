@@ -268,7 +268,7 @@ export function TableOfContents({ items }: TableOfContentsProps) {
   );
 }
 
-// 데스크톱 고정 TOC의 뷰포트 상단 거리(헤더 64 + 여백). ponytail: 헤더 높이 바뀌면 조정
+// 데스크톱 고정 TOC의 뷰포트 상단 거리(헤더 64 + 여백). NOTE(yagni): 헤더 높이 바뀌면 조정
 const DESKTOP_TOC_TOP = 128;
 
 /**
@@ -328,7 +328,7 @@ export function DesktopTableOfContents({ items }: TableOfContentsProps) {
 }
 
 // 이만큼 스크롤하면 모바일 TOC 오버레이가 나타난다(헤딩/제목을 지난 뒤).
-// ponytail: 제목 영역 높이 바뀌면 조정
+// NOTE(yagni): 제목 영역 높이 바뀌면 조정
 const MOBILE_TOC_REVEAL = 240;
 
 /**
