@@ -19,7 +19,7 @@ const navLinks: NavLink[] = [
 ];
 
 /**
- * 블로그 헤더 — 조립 담당.
+ * 블로그 헤더
  * 로고/읽기경로(ReadingCrumb), 네비(HeaderNav), 액션(HeaderActions),
  * 메뉴 드롭다운(MobileMenu), 검색 모달(SearchDialog)을 조립한다.
  */
