@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useDialogFocusTrap } from "@/hooks/use-dialog-focus-trap";
 import { cn } from "@/lib/utils";
 import type { SearchPost } from "@/types/post";
 
@@ -69,6 +70,9 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
   const [loadError, setLoadError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useDialogFocusTrap(dialogRef, isOpen);
 
   const trimmedQuery = query.trim();
   // React Compiler가 메모이즈하므로 useMemo 불필요. 키보드 effect는 이 값을
@@ -203,6 +207,7 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
       />
 
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label="Search posts"
