@@ -165,6 +165,9 @@ export function FloatingMenu() {
     </svg>
   );
 
+  // 숨김 상태에선 내부 버튼이 탭 포커스를 받지 않도록 inert로 서브트리째 비활성화.
+  const pillHidden = atComments || pillState === "hidden";
+
   return (
     <>
       {/* 중앙 하단 유리 알약: 좋아요(수) + 댓글 */}
@@ -174,13 +177,14 @@ export function FloatingMenu() {
           "bottom-[calc(1.5rem+env(safe-area-inset-bottom))]",
           "transition duration-300 motion-reduce:transition-none",
           glass,
-          atComments || pillState === "hidden"
+          pillHidden
             ? "pointer-events-none translate-y-3 opacity-0"
             : pillState === "dim"
               ? "translate-y-0 opacity-70 hover:opacity-100 focus-within:opacity-100"
               : "translate-y-0 opacity-100",
         )}
-        aria-hidden={atComments || pillState === "hidden"}
+        aria-hidden={pillHidden}
+        inert={pillHidden}
       >
         <button
           type="button"
