@@ -86,7 +86,6 @@
 - 본문은 "무엇을·왜"를 짧게. 구현 디테일 나열보다 의도를 적는다.
 - type은 Conventional Commits를 따른다: `feat` / `fix` / `refactor` / `chore` / `docs`.
 - 접근성 작업은 제목에 `접근성 -`을 붙여 의도를 드러낸다.
-- Claude 공동작성자(Co-Authored-By) 트레일러는 넣지 않는다.
 
 예시:
 

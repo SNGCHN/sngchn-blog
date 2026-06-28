@@ -11,10 +11,8 @@ import { PostComments } from "@/components/post/post-comments";
 import { PostHeader } from "@/components/post/post-header";
 import { PostPager } from "@/components/post/post-pager";
 import { SeriesTableOfContents } from "@/components/post/series-table-of-contents";
-import {
-  DesktopTableOfContents,
-  MobileTableOfContents,
-} from "@/components/post/table-of-contents";
+import { DesktopTableOfContents } from "@/components/post/table-of-contents-desktop";
+import { MobileTableOfContents } from "@/components/post/table-of-contents-mobile";
 import { getPostBySlug, getPostPageData } from "@/lib/posts";
 
 interface PageProps {
