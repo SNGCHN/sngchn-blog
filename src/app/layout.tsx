@@ -20,6 +20,11 @@ export const metadata: Metadata = {
     template: "%s | sngchn.blog",
   },
   description: "배운 것과 트러블슈팅을 기록합니다",
+  alternates: {
+    types: {
+      "application/rss+xml": "/rss.xml",
+    },
+  },
 };
 
 const themeScript = `
