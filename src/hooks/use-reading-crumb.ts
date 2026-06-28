@@ -22,7 +22,8 @@ export function useReadingCrumb(pathname: string) {
   useEffect(() => {
     const isPost = pathname.startsWith("/posts/") && pathname !== "/posts";
     const commit = (parts: string[] | null) => {
-      const key = parts ? parts.join("") : "";
+      // 세그먼트 경계를 보존(join("")은 ["ab","c"]와 ["a","bc"]가 충돌)
+      const key = parts ? JSON.stringify(parts) : "";
       if (key === crumbKeyRef.current) return;
       crumbKeyRef.current = key;
       setCrumb(parts);

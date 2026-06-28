@@ -2,7 +2,10 @@ import { type RefObject, useEffect } from "react";
 
 /**
  * 본문 코드 블록(pre)에 복사 버튼을 설치한다.
- * dataset.copyInstalled 가드로 중복 설치를 막으므로 매 렌더 호출해도 안전.
+ *
+ * deps 배열이 없는 건 의도: client 라우팅으로 글을 전환하면 MDXContent가
+ * remount되지 않고 code prop만 바뀔 수 있어, 매 렌더 후 새 pre를 다시 훑어야
+ * 새 글의 코드 블록에도 버튼이 붙는다. dataset.copyInstalled 가드로 중복 설치는 막힌다.
  */
 export function useCodeCopyButtons(rootRef: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
