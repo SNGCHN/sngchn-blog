@@ -18,7 +18,7 @@ function isValidSlug(slug: string): boolean {
   return posts.some((post) => post.slug === slug);
 }
 
-// 개수만 캐싱
+// 개수만 캐싱(60초 revalidate)
 const getCachedCount = unstable_cache(
   async (slug: string) => {
     const count = await redis.scard(likeKey(slug));
@@ -37,8 +37,7 @@ export type LikeResult =
   | { ok: true; likes: number; liked: boolean }
   | { ok: false; reason: "rate-limited" | "invalid" | "error" };
 
-// 목표 상태 멱등하게 설정. SADD/SREM은 멱등이라 같은 요청이 여러 번 와도 안전하고, 음수/중복이 구조적으로 불가능
-// 클라이언트가 낙관적 업데이트를 위해 원하는 최종 상태를 그대로 보낼 수 있다.
+// 목표 상태를 멱등하게 설정. SADD/SREM이 멱등이라 연타·중복 요청에도 음수/중복이 구조적으로 불가능
 export async function setLike(
   slug: string,
   liked: boolean,
@@ -46,7 +45,7 @@ export async function setLike(
   try {
     if (!isValidSlug(slug)) return { ok: false, reason: "invalid" };
 
-    // 익명 식별자(쿠키로). 없으면 발급한다. localStorage 삭제로는 우회 불가능
+    // 익명 식별자는 httpOnly 쿠키로 발급 → localStorage 삭제로는 우회 불가
     const cookieStore = await cookies();
     let uid = cookieStore.get(UID_COOKIE)?.value;
     if (!uid) {
@@ -60,7 +59,7 @@ export async function setLike(
       });
     }
 
-    // 양방향(좋아요/취소) 모두 레이트리밋 대상.
+    // 좋아요/취소 양방향 모두 레이트리밋 대상
     const { success } = await ratelimit.limit(uid);
     if (!success) return { ok: false, reason: "rate-limited" };
 
@@ -71,7 +70,7 @@ export async function setLike(
       await redis.srem(key, uid);
     }
 
-    // 다른 방문자에게는 getCachedCount의 60초 revalidate로 전파된다.
+    // 다른 방문자에게는 getCachedCount의 60초 revalidate로 전파
     const likes = await redis.scard(key);
 
     return { ok: true, likes: likes ?? 0, liked };

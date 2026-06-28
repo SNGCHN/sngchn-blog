@@ -12,9 +12,8 @@ function getGiscusTheme() {
     theme === "dark" ||
     (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-  // giscus.app(HTTPS) iframe에서 http://localhost CSS를 fetch하면
-  // mixed content로 브라우저가 차단하므로, 로컬에서는 배포된 사이트의
-  // CSS(NEXT_PUBLIC_SITE_URL)를 대신 사용한다.
+  // giscus.app(HTTPS) iframe에서 http://localhost CSS를 fetch하면 mixed content로
+  // 차단되므로, 로컬에선 배포 사이트의 CSS(NEXT_PUBLIC_SITE_URL)를 대신 사용
   const isLocalhost = ["localhost", "127.0.0.1"].includes(
     window.location.hostname,
   );

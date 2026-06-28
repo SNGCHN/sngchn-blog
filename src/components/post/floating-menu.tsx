@@ -46,7 +46,7 @@ export function FloatingMenu() {
     };
   }, []);
 
-  // 댓글 섹션이 보이면 알약은 중복이므로 숨긴다(섹션 위에 좋아요 버튼이 있음).
+  // 댓글 섹션이 보이면 알약은 중복이므로 숨김(섹션 위에 좋아요 버튼이 있음).
   useEffect(() => {
     const el = document.getElementById("comments-section");
     if (!el) return;
@@ -98,7 +98,7 @@ export function FloatingMenu() {
           ? "좋아요 취소"
           : "좋아요";
 
-  // 같은 색 페이지에서 묻히지 않게 다크 필로 대비를 준다(우하단 탑버튼과 같은 톤). 블러는 유지.
+  // 같은 색 페이지에서 묻히지 않게 다크 필로 대비(우하단 탑버튼과 같은 톤). 블러는 유지.
   const glass = "bg-warm-text/90 shadow-lg shadow-black/15 backdrop-blur-md";
 
   // 다크 필 위 밝은 아이콘: text-warm-bg/75 → hover 시 full

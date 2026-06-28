@@ -11,7 +11,7 @@ const DESKTOP_TOC_TOP = 128;
 
 /**
  * 데스크톱 사이드바 목차. sticky의 초기 catch-up 없이 position:fixed로 완전 고정.
- * 가운데 정렬 컨테이너의 우측 컬럼 위치를 placeholder로 측정해 가로를 맞춘다.
+ * 가운데 정렬 컨테이너의 우측 컬럼 위치를 placeholder로 측정해 가로를 맞춤.
  */
 export function DesktopTableOfContents({ items }: TableOfContentsProps) {
   const placeholderRef = useRef<HTMLDivElement>(null);

@@ -44,7 +44,7 @@ export function ReadingCrumb({
                 "inline-block will-change-transform",
                 isLast ? "text-warm-text" : "text-warm-muted",
               )}
-              // 마지막 세그먼트만 스크롤 진행률에 묶여 아래에서 위로 들어온다
+              // 마지막 세그먼트만 스크롤 진행률에 묶여 아래에서 위로 진입
               style={
                 isLast
                   ? {

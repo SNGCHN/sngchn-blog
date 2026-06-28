@@ -10,14 +10,14 @@ const FOCUSABLE_SELECTOR = [
 ].join(",");
 
 /**
- * 모달 내부로 Tab 포커스를 가둔다(Tab/Shift+Tab 순환).
+ * 모달 내부로 Tab 포커스를 가둠(Tab/Shift+Tab 순환).
  * 라이브러리 없이 경계에서만 포커스를 되돌리는 최소 구현.
  */
 export function useDialogFocusTrap(
   containerRef: RefObject<HTMLElement | null>,
   isActive: boolean,
 ) {
-  // biome-ignore lint/correctness/useExhaustiveDependencies: containerRef는 안정적 ref(파라미터). .current는 핸들러 호출 시점에 읽는다.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: containerRef는 안정적 ref(파라미터). .current는 핸들러 호출 시점에 읽음.
   useEffect(() => {
     if (!isActive) return;
     const container = containerRef.current;

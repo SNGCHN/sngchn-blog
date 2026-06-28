@@ -27,11 +27,10 @@ export function getPostBySlug(slug: string) {
 }
 
 /**
- * 글 페이지가 필요한 데이터를 한 번의 정렬로 모아준다.
- * (앞뒤 글 · 같은 시리즈 글). 글이 없으면 null.
+ * 글 페이지에 필요한 데이터(앞뒤 글 · 같은 시리즈 글)를 한 번의 정렬로 모음. 글이 없으면 null.
  *
- * seriesPosts는 client 컴포넌트로 넘기므로 무거운 code/toc를 빼고
- * 필요한 필드만 추린다(정렬은 표시 컴포넌트가 order로 처리).
+ * seriesPosts는 client 컴포넌트로 넘기므로 무거운 code/toc를 빼고 필요한 필드만 추림
+ * (정렬은 표시 컴포넌트가 order로 처리).
  */
 export function getPostPageData(slug: string) {
   const post = getPostBySlug(slug);

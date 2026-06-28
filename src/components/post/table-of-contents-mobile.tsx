@@ -17,9 +17,9 @@ const MOBILE_TOC_OFFSET = 128;
 const MOBILE_TOC_REVEAL = 240;
 
 /**
- * 모바일/태블릿용 목차. 본문에 끼우지 않고 화면 상단에 fixed로 떠 있다.
+ * 모바일/태블릿용 목차. 본문에 끼우지 않고 화면 상단에 fixed로 떠 있음.
  * 최상단에선 숨겨졌다가 스크롤하면 나타나며, 기본은 접힘(현재 섹션 + 진행 바)이고
- * 탭하면 목차가 펼쳐진다.
+ * 탭하면 목차가 펼쳐짐.
  */
 export function MobileTableOfContents({ items }: TableOfContentsProps) {
   const [collapsed, setCollapsed] = useState(true);
@@ -137,7 +137,7 @@ export function MobileTableOfContents({ items }: TableOfContentsProps) {
       className={cn(
         "xl:hidden fixed top-[72px] inset-x-4 sm:inset-x-6 z-30 overflow-hidden",
         "rounded-2xl border border-warm-border",
-        // 본문 위에 떠 있는 오버레이라 불투명해야 뒤 글자가 안 비친다
+        // 본문 위에 떠 있는 오버레이라 불투명해야 뒤 글자가 안 비침
         "bg-warm-bg/95 backdrop-blur-md",
         "shadow-[0_8px_24px_rgba(0,0,0,0.12)]",
         "transition-[opacity,transform] duration-300",

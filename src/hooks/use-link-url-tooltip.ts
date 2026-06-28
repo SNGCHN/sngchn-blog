@@ -2,7 +2,7 @@ import { type RefObject, useEffect } from "react";
 
 /**
  * PC(호버 가능 기기)에서만: 본문 링크에 커서를 따라다니는 주소 툴팁.
- * 긴 주소는 CSS text-overflow로 … 처리된다.
+ * 긴 주소는 CSS text-overflow로 … 처리.
  */
 export function useLinkUrlTooltip(rootRef: RefObject<HTMLDivElement | null>) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: rootRef는 파라미터로 받은 안정적 ref. 마운트 시점 .current로 충분해 deps 불필요.

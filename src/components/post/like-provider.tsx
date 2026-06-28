@@ -59,7 +59,7 @@ export function LikeProvider({
 
   useEffect(() => {
     const stored = localStorage.getItem(`liked:${slug}`) === "true";
-    // 이미 like한 사용자는 initialLikes에 이미 포함돼 있으므로 serverLiked로 상쇄한다.
+    // 이미 like한 사용자는 initialLikes에 포함돼 있으므로 serverLiked로 상쇄
     setLiked(stored);
     setServerLiked(stored);
     desiredRef.current = stored;
@@ -77,7 +77,7 @@ export function LikeProvider({
     statusTimerRef.current = window.setTimeout(() => setStatus("idle"), ms);
   }, []);
 
-  // 서버 상태가 desiredRef와 일치할 때까지 동기화한다(연타는 자동으로 합쳐짐).
+  // 서버 상태가 desiredRef와 일치할 때까지 동기화(연타는 자동으로 합쳐짐).
   const flush = useCallback(async () => {
     if (syncingRef.current) return;
     syncingRef.current = true;
@@ -89,7 +89,7 @@ export function LikeProvider({
         const result = await setLike(slug, sending);
 
         if (!result.ok) {
-          // 롤백: 마지막으로 서버가 확정한 상태로 되돌린다.
+          // 롤백: 마지막으로 서버가 확정한 상태로 복귀
           desiredRef.current = serverLikedRef.current;
           setLiked(serverLikedRef.current);
           if (result.reason === "rate-limited") {
@@ -114,7 +114,7 @@ export function LikeProvider({
       setStatus("idle");
     } finally {
       syncingRef.current = false;
-      // 동기화 종료 직전에 끼어든 클릭이 있으면 한 번 더 돌린다.
+      // 동기화 종료 직전에 끼어든 클릭이 있으면 한 번 더 실행
       if (desiredRef.current !== serverLikedRef.current) {
         void flush();
       }

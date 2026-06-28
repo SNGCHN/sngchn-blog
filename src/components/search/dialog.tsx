@@ -37,7 +37,7 @@ function highlightText(text: string, query: string) {
   );
 }
 
-// 본문에서 매칭 지점 주변을 잘라 스니펫을 만든다. 빈 query/매칭 없으면 null.
+// 본문에서 매칭 지점 주변을 잘라 스니펫 생성. 빈 query/매칭 없으면 null.
 function buildSnippet(text: string, query: string, radius = 70) {
   const trimmed = query.trim();
   if (!trimmed) return null;
@@ -65,7 +65,7 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
-  // 검색 인덱스(본문 포함)는 모달이 처음 열릴 때만 가져온다. null = 아직 미로드.
+  // 검색 인덱스(본문 포함)는 모달이 처음 열릴 때만 로드. null = 아직 미로드.
   const [posts, setPosts] = useState<SearchPost[] | null>(null);
   const [loadError, setLoadError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -76,7 +76,7 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
 
   const trimmedQuery = query.trim();
   // React Compiler가 메모이즈하므로 useMemo 불필요. 키보드 effect는 이 값을
-  // dependency로 들지 않고 아래 ref로 최신값을 읽는다(리스너 재등록 방지).
+  // dependency로 들지 않고 아래 ref로 최신값을 읽음(리스너 재등록 방지).
   const lowerQuery = trimmedQuery.toLowerCase();
   const searchResults =
     trimmedQuery && posts

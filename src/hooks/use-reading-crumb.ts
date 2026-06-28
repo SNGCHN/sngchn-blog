@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 /**
  * 글 상세에서 스크롤 시 로고 자리에 띄울 "글제목 › H2 › H3" 경로(crumb)와
- * 마지막 세그먼트의 진입 진행률(headProgress)을 계산한다.
+ * 마지막 세그먼트의 진입 진행률(headProgress)을 계산.
  * 글 상세가 아니면 crumb = null(로고 유지).
  */
 export function useReadingCrumb(pathname: string) {

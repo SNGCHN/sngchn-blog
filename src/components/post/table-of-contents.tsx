@@ -90,8 +90,8 @@ export function TocLinks({
 }
 
 /**
- * 스크롤에 따라 활성 헤딩을 추적하고, 레일 위 인디케이터를 직접 DOM에 그린다.
- * 데스크톱 사이드바와 모바일 카드가 공유한다.
+ * 스크롤에 따라 활성 헤딩을 추적하고, 레일 위 인디케이터를 직접 DOM에 그림.
+ * 데스크톱 사이드바와 모바일 카드가 공유.
  *
  * @param offsetOverride 활성 판정 기준선(px). 없으면 --scroll-offset + 4.
  */
@@ -118,7 +118,7 @@ export function useTocIndicator(
     let frameId: number | null = null;
 
     // 읽기 기준선: 앵커 클릭 시 헤딩이 떨어지는 지점(scroll-padding-top)
-    // 바로 아래. 값이 어긋나면 TOC를 눌러도 인디케이터가 그 항목에 안 맞는다.
+    // 바로 아래. 값이 어긋나면 TOC를 눌러도 인디케이터가 그 항목에 안 맞음.
     const scrollOffset =
       Number.parseFloat(
         getComputedStyle(document.documentElement).getPropertyValue(
@@ -160,7 +160,7 @@ export function useTocIndicator(
       });
 
       // 섹션 내 진행률(0~1): 기준선이 현재 헤딩과 다음 헤딩 사이 어디인지.
-      // 이 값으로 인디케이터를 항목 사이에서 연속적으로 보간한다.
+      // 이 값으로 인디케이터를 항목 사이에서 연속적으로 보간.
       let progress = 0;
       if (passed && index < headings.length - 1) {
         const current = headings[index].top;
@@ -173,7 +173,7 @@ export function useTocIndicator(
         }
       }
 
-      // 페이지 끝에 닿으면 마지막 항목까지 채운다(상단 진행 바와 같은 감각)
+      // 페이지 끝에 닿으면 마지막 항목까지 채움(상단 진행 바와 같은 감각)
       const doc = document.documentElement;
       if (window.scrollY + window.innerHeight >= doc.scrollHeight - 2) {
         index = headings.length - 1;
@@ -192,7 +192,7 @@ export function useTocIndicator(
       const height =
         currentRect.height + (nextRect.height - currentRect.height) * progress;
 
-      // 매 프레임 호출되므로 리렌더 없이 DOM에 직접 쓴다
+      // 매 프레임 호출되므로 리렌더 없이 DOM에 직접 쓰기
       indicator.style.transform = `translateY(${y}px)`;
       indicator.style.height = `${height}px`;
       indicator.style.opacity = "1";
