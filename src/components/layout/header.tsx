@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HeaderActions } from "@/components/layout/header-actions";
 import { HeaderNav, type NavLink } from "@/components/layout/header-nav";
 import { MobileMenu } from "@/components/layout/mobile-menu";
@@ -21,23 +21,53 @@ const navLinks: NavLink[] = [
 /**
  * 블로그 헤더
  * 로고/읽기경로(ReadingCrumb), 네비(HeaderNav), 액션(HeaderActions),
- * 메뉴 드롭다운(MobileMenu), 검색 모달(SearchDialog)을 조립한다.
+ * 메뉴 드롭다운(MobileMenu), 검색 모달(SearchDialog)을 조립.
  */
 export function Header() {
   const pathname = usePathname();
+  const headerRef = useRef<HTMLElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { crumb, headProgress } = useReadingCrumb(pathname);
 
   useSearchShortcut(() => setIsSearchOpen(true));
 
-  // 읽기모드(crumb) 해제되면 열려 있던 메뉴를 닫는다.
+  // 읽기모드(crumb) 해제되면 열려 있던 메뉴를 닫음.
   useEffect(() => {
     if (!crumb) setIsMobileMenuOpen(false);
   }, [crumb]);
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (
+        target instanceof Node &&
+        headerRef.current &&
+        !headerRef.current.contains(target)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isMobileMenuOpen]);
+
   return (
     <header
+      ref={headerRef}
       className={cn(
         "sticky top-0 z-50 w-full",
         "border-b border-warm-border",
@@ -60,6 +90,7 @@ export function Header() {
         isOpen={isMobileMenuOpen}
         links={navLinks}
         pathname={pathname}
+        onClose={() => setIsMobileMenuOpen(false)}
         onLinkClick={() => setIsMobileMenuOpen(false)}
       />
 

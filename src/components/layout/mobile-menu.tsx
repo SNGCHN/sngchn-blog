@@ -7,16 +7,23 @@ export function MobileMenu({
   isOpen,
   links,
   pathname,
+  onClose,
   onLinkClick,
 }: {
   isOpen: boolean;
   links: NavLink[];
   pathname: string;
+  onClose: () => void;
   onLinkClick: () => void;
 }) {
   return (
     <div
       aria-hidden={!isOpen}
+      onClick={(event) => {
+        const target = event.target;
+        if (target instanceof Element && target.closest("a,button")) return;
+        onClose();
+      }}
       className={cn(
         "grid bg-transparent transition-[grid-template-rows,opacity,border-color] duration-300 ease-out motion-reduce:transition-none",
         isOpen
